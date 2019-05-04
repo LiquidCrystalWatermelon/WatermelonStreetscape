@@ -1,26 +1,39 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.FileProvider
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.Toast
 import com.kotlinproject.wooooo.watermelonstreetscape.R
-import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = "MainActivity_Log"
     private val permissionList = listOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.INTERNET,
         Manifest.permission.CAMERA)
+    private val tempPhotoFile by lazy {
+        File(Environment.getExternalStorageDirectory().path +
+            "/WatermelonStreetScape/" + System.currentTimeMillis() + ".jpg")
+    }
     private val allPermissionRequestCode = 2625
+    private val albumRequestCode = 2626
+    private val cameraRequestCode = 2627
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,17 +89,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onMenuItemClick(menuItem: MenuItem): Boolean {
-        ToastUtils.showTextShort(this, menuItem.itemId)
         when (menuItem.itemId) {
             R.id.menu_item_select          -> {
-                ToastUtils.showTextShort(this, "从相册中选择")
-                // TODO 选择照片
+                // 选择照片
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                startActivityForResult(intent, albumRequestCode)
             }
             R.id.menu_item_take_photograph -> {
-                ToastUtils.showTextShort(this, "拍照")
-                // TODO 打开相机
+                // 打开相机
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    Log.i(TAG, ": " + tempPhotoFile.path)
+                    FileProvider.getUriForFile(
+                        this, "com.kotlinproject.wooooo.watermelonstreetscape.fileprovider", tempPhotoFile)
+                } else {
+                    Uri.fromFile(tempPhotoFile)
+                }
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                startActivityForResult(intent, cameraRequestCode)
             }
         }
         return false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // TODO 处理拿来的照片
+        Log.i(TAG, """: $requestCode $resultCode ${data?.data}""")
     }
 }
