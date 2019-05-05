@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlinx.android.synthetic.main.view_photo_item.view.*
@@ -24,7 +25,8 @@ class PhotoItemAdapter(
         val item = itemList[position]
         with(holder) {
             tvPhotoDescription.text = item.mostImportantText
-            ivPhoto.setImageBitmap(item.bitmap)
+            Glide.with(context).load(item.bitmap).into(ivPhoto)
+//            ivPhoto.setImageBitmap(item.bitmap)
         }
     }
 
