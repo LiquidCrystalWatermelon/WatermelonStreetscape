@@ -13,7 +13,6 @@ import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -26,12 +25,7 @@ import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
-import android.animation.ValueAnimator
-import android.animation.ArgbEvaluator
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
-import android.view.animation.AccelerateInterpolator
 
 
 class MainActivity : AppCompatActivity() {
@@ -105,6 +99,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        title="西瓜街景"
         fab_take_photo.setOnClickListener(this::onFabClick)
         rv_photo_item.adapter = adapter
         rv_photo_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
