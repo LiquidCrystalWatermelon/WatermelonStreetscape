@@ -13,8 +13,9 @@ class PhotoViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_view)
-        savedInstanceState?.let { streetScape = it.get(BUNDLE_STREET_SCAPE) as TranslateStreetScape }
-        siv_photo_view.setImage(ImageSource.bitmap(streetScape.bitmap))
+        streetScape = intent.getParcelableExtra(BUNDLE_STREET_SCAPE)
+        title = streetScape.mostImportantText
+        siv_photo_view.setImage(ImageSource.uri(streetScape.getPhotoUri(this)))
     }
 
     companion object {

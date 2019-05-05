@@ -1,8 +1,10 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.http
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TextBox
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
+import java.io.File
 import java.io.IOException
 import kotlin.random.Random
 
@@ -14,11 +16,12 @@ interface HttpCallback<T> {
 }
 
 interface HttpClientInterface {
-    fun <T> uploadImage(bitmap: Bitmap, callback: HttpCallback<T>)
+    fun <T> uploadImage(bitmapPath: String, callback: HttpCallback<T>)
 }
 
 object FakeHttpClient : HttpClientInterface {
-    override fun <T> uploadImage(bitmap: Bitmap, callback: HttpCallback<T>) {
+    override fun <T> uploadImage(bitmapPath: String, callback: HttpCallback<T>) {
+        val bitmap = BitmapFactory.decodeFile(bitmapPath)
         // 随机生成一些框返回
         val width = bitmap.width
         val height = bitmap.height
@@ -32,7 +35,7 @@ object FakeHttpClient : HttpClientInterface {
                 .joinToString("")
             TextBox(x, y, x + w, y + h, s)
         }
-        val result = TranslateStreetScape(bitmap, textBoxList)
+        val result = TranslateStreetScape(bitmapPath, textBoxList)
         callback.onResponse(result as T)
     }
 }

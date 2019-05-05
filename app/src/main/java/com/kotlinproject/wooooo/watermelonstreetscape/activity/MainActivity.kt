@@ -3,6 +3,7 @@ package com.kotlinproject.wooooo.watermelonstreetscape.activity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -12,7 +13,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.FileProvider
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -26,7 +26,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
 import android.support.v7.widget.RecyclerView
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
+import java.io.FileOutputStream
 
+/**
+ * 相机和相册接收或返回的格式均是 uri
+ * Glide 支持 uri file bitmap
+ * OkHttp 上传仅支持 file
+ * 总之一定要有一个 uri 转 file 的过程
+ **/
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity_Log"
@@ -40,15 +48,13 @@ class MainActivity : AppCompatActivity() {
 
     /** 拍照临时图片存放 uri */
     private val tempPhotoUri by lazy {
-        val file = File(Environment.getExternalStorageDirectory().path +
-            "/WatermelonStreetScape/image/temp.jpg")
+        val file = File(imageFilePath("temp"))
         file.parentFile.let {
             if (!it.exists()) it.mkdirs()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            FileProvider.getUriForFile(
-                this, "com.kotlinproject.wooooo.watermelonstreetscape.fileprovider", file)
+            FileUtils.fileToUri(this, file)
         } else {
             Uri.fromFile(file)
         }
@@ -68,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         checkPermission()
     }
 
+    /** 检查权限 */
     private fun checkPermission() {
         val toRequestPermissions = permissionList.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
@@ -94,12 +101,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** 获得所有所需权限 */
     private fun onAllPermissionGranted() {
         init()
     }
 
     private fun init() {
-        title="西瓜街景"
+        title = "西瓜街景"
         fab_take_photo.setOnClickListener(this::onFabClick)
         rv_photo_item.adapter = adapter
         rv_photo_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -125,7 +133,9 @@ class MainActivity : AppCompatActivity() {
         fabHidePopup()
     }
 
+    // 浮动按钮动画
     private fun fabMoveY(y: Float) = fab_take_photo.animate().translationY(y).start()
+
     private fun fabHide() = fabMoveY(250f)
     private fun fabHidePopup() = fabMoveY(-200f)
     private fun fabShow() = fabMoveY(0f)
@@ -154,7 +164,13 @@ class MainActivity : AppCompatActivity() {
         val uri = if (requestCode == albumRequestCode) data?.data else tempPhotoUri
         val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
 
-        HttpClient.uploadImage(bitmap, object : HttpCallback<TranslateStreetScape> {
+        val filePath = imageFilePath(System.currentTimeMillis())
+        FileOutputStream(filePath).use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            it.flush()
+        }
+
+        HttpClient.uploadImage(filePath, object : HttpCallback<TranslateStreetScape> {
             override fun onFailure(e: IOException?) {
                 ToastUtils.showTextShort(this@MainActivity, "图像上传失败")
             }
@@ -166,4 +182,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun imageFilePath(imgName: Any) = Environment
+        .getExternalStorageDirectory().path +
+        "/WatermelonStreetScape/image/$imgName.jpg"
 }

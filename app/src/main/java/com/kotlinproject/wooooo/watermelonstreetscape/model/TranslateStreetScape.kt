@@ -1,11 +1,13 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.model
 
-import android.graphics.Bitmap
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
+import java.io.File
 
 data class TranslateStreetScape(
-    val bitmap: Bitmap,
+    val photoPath: String,
     val textBoxList: List<TextBox>
 ) : Parcelable {
     val mostImportantText by lazy {
@@ -13,12 +15,16 @@ data class TranslateStreetScape(
             ?.text ?: ""
     }
 
+    val photoFile by lazy { File(photoPath) }
+
+    fun getPhotoUri(context: Context) = FileUtils.fileToUri(context, photoFile)
+
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(Bitmap::class.java.classLoader),
+        parcel.readString(),
         parcel.createTypedArrayList(TextBox))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(bitmap, flags)
+        parcel.writeString(photoPath)
         parcel.writeTypedList(textBoxList)
     }
 

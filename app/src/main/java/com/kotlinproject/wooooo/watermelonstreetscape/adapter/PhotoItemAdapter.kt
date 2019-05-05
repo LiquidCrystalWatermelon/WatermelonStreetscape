@@ -27,7 +27,7 @@ class PhotoItemAdapter(
         val item = itemList[position]
         with(holder) {
             tvPhotoDescription.text = item.mostImportantText
-            Glide.with(context).load(item.bitmap).into(ivPhoto)
+            Glide.with(context).load(item.photoFile).into(ivPhoto)
             itemView.setOnClickListener {
                 val intent = Intent(context, PhotoViewActivity::class.java)
                 intent.putExtra(PhotoViewActivity.BUNDLE_STREET_SCAPE, item)
