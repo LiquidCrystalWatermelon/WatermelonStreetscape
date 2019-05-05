@@ -26,6 +26,13 @@ import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
+import android.animation.ValueAnimator
+import android.animation.ArgbEvaluator
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.support.v7.widget.RecyclerView
+import android.view.animation.AccelerateInterpolator
+
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity_Log"
@@ -100,6 +107,13 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         fab_take_photo.setOnClickListener(this::onFabClick)
         rv_photo_item.adapter = adapter
+        rv_photo_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val threshold = 50
+                if (dy > threshold) fabHide()
+                if (dy < 0) fabShow()
+            }
+        })
 //        val res = application.resources
 //        // TODO 图片超糊的，不知道为什么
 //        val bitmap = BitmapFactory.decodeResource(res, R.mipmap._388059)
@@ -111,8 +125,15 @@ class MainActivity : AppCompatActivity() {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.menu_popup_take_photo, popup.menu)
         popup.setOnMenuItemClickListener(this::onMenuItemClick)
+        popup.setOnDismissListener { fabShow() }
         popup.show()
+        fabHidePopup()
     }
+
+    private fun fabMoveY(y: Float) = fab_take_photo.animate().translationY(y).start()
+    private fun fabHide() = fabMoveY(250f)
+    private fun fabHidePopup() = fabMoveY(-200f)
+    private fun fabShow() = fabMoveY(0f)
 
     private fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
