@@ -14,7 +14,12 @@ class PhotoViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_view)
         streetScape = intent.getParcelableExtra(BUNDLE_STREET_SCAPE)
-        title = streetScape.mostImportantText
+        setSupportActionBar(toolbar_photo_view)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = streetScape.mostImportantText
+        }
+        toolbar_photo_view.setNavigationOnClickListener { finish() }
         siv_photo_view.setImage(ImageSource.uri(streetScape.getPhotoUri(this)))
     }
 
