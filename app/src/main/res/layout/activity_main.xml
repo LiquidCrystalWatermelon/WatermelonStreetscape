@@ -22,6 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/colorAccentDark"
+        app:backgroundTint="@color/colorAccentDark"
         android:layout_margin="16dp"
         android:clickable="true"
         android:focusable="true"
