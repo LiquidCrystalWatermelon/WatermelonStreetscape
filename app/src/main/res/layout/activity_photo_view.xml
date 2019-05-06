@@ -22,8 +22,13 @@
     </android.support.design.widget.AppBarLayout>
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-        android:id="@+id/siv_photo_view"
+        android:id="@+id/siv_photo_view_with_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/siv_photo_view_no_text"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>
