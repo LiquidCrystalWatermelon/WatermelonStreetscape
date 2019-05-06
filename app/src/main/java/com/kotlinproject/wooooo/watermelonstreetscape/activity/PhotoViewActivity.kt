@@ -9,6 +9,7 @@ import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.StreetScapeUtils
 import kotlinx.android.synthetic.main.activity_photo_view.*
+import kotlin.concurrent.thread
 
 class PhotoViewActivity : AppCompatActivity() {
     private lateinit var streetScape: TranslateStreetScape
@@ -33,9 +34,14 @@ class PhotoViewActivity : AppCompatActivity() {
         siv_photo_view_with_text.setImage(ImageSource.bitmap(textBitmap))
         siv_photo_view_no_text.setImage(ImageSource.uri(streetScape.getPhotoUri(this)))
 
-        showWithText()
         siv_photo_view_with_text.setOnClickListener { showNoText() }
         siv_photo_view_no_text.setOnClickListener { showWithText() }
+
+        showNoText()
+        thread {
+            Thread.sleep(300)
+            runOnUiThread { showWithText() }
+        }
     }
 
     private fun showWithText() {
