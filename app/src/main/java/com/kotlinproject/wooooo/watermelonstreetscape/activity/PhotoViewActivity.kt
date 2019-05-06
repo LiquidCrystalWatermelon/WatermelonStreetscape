@@ -15,6 +15,7 @@ class PhotoViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_view)
         streetScape = intent.getParcelableExtra(BUNDLE_STREET_SCAPE)
+
         setSupportActionBar(toolbar_photo_view)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -22,6 +23,7 @@ class PhotoViewActivity : AppCompatActivity() {
         }
         toolbar_photo_view.setNavigationOnClickListener { finish() }
         val textBitmap = StreetScapeUtils.draw(streetScape)
+        siv_photo_view.setMinimumDpi(40)
         siv_photo_view.setImage(ImageSource.bitmap(textBitmap))
 //        siv_photo_view.setImage(ImageSource.uri(streetScape.getPhotoUri(this)))
     }
