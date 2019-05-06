@@ -30,12 +30,12 @@ import android.support.v7.widget.RecyclerView
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
 import java.io.FileOutputStream
 
-/**
+/*
  * 相机和相册接收或返回的格式均是 uri
  * Glide 支持 uri file bitmap
  * OkHttp 上传仅支持 file
  * 总之一定要有一个 uri 转 file 的过程
- **/
+ */
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity_Log"
@@ -118,11 +118,6 @@ class MainActivity : AppCompatActivity() {
                 if (dy < 0) fabShow()
             }
         })
-//        val res = application.resources
-//        // TODO 图片超糊的，不知道为什么
-//        val bitmap = BitmapFactory.decodeResource(res, R.mipmap._388059)
-//        val adapter = PhotoItemAdapter(this, Array(20) { TranslateStreetScape(bitmap, listOf(TextBox(0f, 0f, 10f, 10f, "abc"))) }.toMutableList())
-//        rv_photo_item.adapter = adapter
     }
 
     private fun onFabClick(view: View) {

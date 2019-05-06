@@ -28,6 +28,7 @@ class PhotoViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_photo_view)
         streetScape = intent.getParcelableExtra(BUNDLE_STREET_SCAPE)
 
+        // toolbar
         setSupportActionBar(toolbar_photo_view)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -35,6 +36,7 @@ class PhotoViewActivity : AppCompatActivity() {
         }
         toolbar_photo_view.setNavigationOnClickListener { finish() }
 
+        // 获取写上文字的图片
         textBitmap = StreetScapeUtils.draw(streetScape)
 
         siv_photo_view_with_text.setMinimumDpi(40)
@@ -45,6 +47,7 @@ class PhotoViewActivity : AppCompatActivity() {
         siv_photo_view_with_text.setOnClickListener { showNoText() }
         siv_photo_view_no_text.setOnClickListener { showWithText() }
 
+        // 用于文本弹出卡片的动画，获取中点和半径
         fun viewCenterR(view: View): Triple<Int, Int, Float> {
             val w = view.width
             val h = view.height
@@ -69,6 +72,7 @@ class PhotoViewActivity : AppCompatActivity() {
                 .start()
         }
 
+        // 长按手势
         val gesture = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onLongPress(e: MotionEvent?) {
                 if (e == null) return
@@ -107,6 +111,7 @@ class PhotoViewActivity : AppCompatActivity() {
         }
     }
 
+    // 显示文字
     private fun showWithText() {
         val (scale, center) = siv_photo_view_no_text.let { it.scale to it.center }
         siv_photo_view_with_text.setScaleAndCenter(scale, center)
@@ -114,6 +119,7 @@ class PhotoViewActivity : AppCompatActivity() {
         siv_photo_view_no_text.visibility = View.GONE
     }
 
+    // 不显示文字
     private fun showNoText() {
         val (scale, center) = siv_photo_view_with_text.let { it.scale to it.center }
         siv_photo_view_no_text.setScaleAndCenter(scale, center)
