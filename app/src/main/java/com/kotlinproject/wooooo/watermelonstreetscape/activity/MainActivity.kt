@@ -1,6 +1,7 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -159,6 +160,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) return
         // 更新在首页列表中
 
         val uri = if (requestCode == albumRequestCode) data?.data else tempPhotoUri

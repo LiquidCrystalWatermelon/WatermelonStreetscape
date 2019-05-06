@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.StreetScapeUtils
 import kotlinx.android.synthetic.main.activity_photo_view.*
 
 class PhotoViewActivity : AppCompatActivity() {
@@ -20,7 +21,9 @@ class PhotoViewActivity : AppCompatActivity() {
             title = streetScape.mostImportantText
         }
         toolbar_photo_view.setNavigationOnClickListener { finish() }
-        siv_photo_view.setImage(ImageSource.uri(streetScape.getPhotoUri(this)))
+        val textBitmap = StreetScapeUtils.draw(streetScape)
+        siv_photo_view.setImage(ImageSource.bitmap(textBitmap))
+//        siv_photo_view.setImage(ImageSource.uri(streetScape.getPhotoUri(this)))
     }
 
     companion object {
