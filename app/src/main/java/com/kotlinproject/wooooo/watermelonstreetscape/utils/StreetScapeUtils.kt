@@ -2,7 +2,6 @@ package com.kotlinproject.wooooo.watermelonstreetscape.utils
 
 import android.graphics.*
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
-import java.io.File
 import kotlin.math.min
 
 object StreetScapeUtils{
@@ -10,6 +9,8 @@ object StreetScapeUtils{
         val bitmap = BitmapFactory
             .decodeFile(streetScape.photoPath)
             .copy(Bitmap.Config.ARGB_8888, true)
+//        // 如果图片太小要放大
+//        val minSideLen = 200
         val canvas = Canvas(bitmap)
         val paint = Paint()
         paint.color = Color.BLUE
