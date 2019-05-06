@@ -6,6 +6,7 @@ import com.kotlinproject.wooooo.watermelonstreetscape.model.TextBox
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import java.io.File
 import java.io.IOException
+import kotlin.math.min
 import kotlin.random.Random
 
 typealias HttpClient = FakeHttpClient
@@ -28,12 +29,14 @@ object FakeHttpClient : HttpClientInterface {
         val textBoxList = (1..Random.nextInt(10)).map {
             val x = Random.nextInt(width).toFloat()
             val y = Random.nextInt(height).toFloat()
-            val w = Random.nextInt(100).toFloat()
-            val h = Random.nextInt(100).toFloat()
+            val xe = Random.nextInt(x.toInt(), min(x + width / 2, width.toFloat()).toInt()).toFloat()
+            val ye = min(y + height / 10, height.toFloat()).toInt().toFloat()
+            val w = Random.nextInt(width / 2).toFloat()
+            val h = Random.nextInt(height / 10).toFloat()
             val s = (1..Random.nextInt(100))
                 .map { (Random.nextInt(26) - 'a'.toInt()).toChar() }
                 .joinToString("")
-            TextBox(x, y, x + w, y + h, s)
+            TextBox(x, y, xe, ye, s)
         }
         val result = TranslateStreetScape(bitmapPath, textBoxList)
         callback.onResponse(result as T)

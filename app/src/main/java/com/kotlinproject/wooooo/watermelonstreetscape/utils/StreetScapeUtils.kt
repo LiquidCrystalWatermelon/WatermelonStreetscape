@@ -18,6 +18,7 @@ object StreetScapeUtils {
         val canvas = Canvas(bitmap)
         val paint = Paint()
 
+        // 背景遮罩
         if (showDarkMask) {
             paint.color = Color.parseColor("#66000000")
             paint.style = Paint.Style.FILL_AND_STROKE
@@ -25,10 +26,17 @@ object StreetScapeUtils {
                 0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat(), paint)
         }
 
+        // 测试用，绘制文本框
+        paint.color = Color.RED
+        streetScape.textBoxList.forEach {
+            canvas.drawRect(it.x0,it.y0,it.x1,it.y1,paint)
+        }
+
+        // 绘制文本
         paint.color = textColor
         paint.textSize = min(bitmap.width, bitmap.height) / 15f
         streetScape.textBoxList.forEach {
-            canvas.drawText(it.text, it.x0, it.y0, paint)
+            canvas.drawText(it.text, it.x0, it.y1, paint)
         }
         return bitmap
     }
