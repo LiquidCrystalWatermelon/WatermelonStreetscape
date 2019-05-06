@@ -162,6 +162,9 @@ class MainActivity : AppCompatActivity() {
         val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
 
         val filePath = imageFilePath(System.currentTimeMillis())
+        File(filePath).parentFile.let {
+            if (!it.exists()) it.mkdirs()
+        }
         FileOutputStream(filePath).use {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
             it.flush()
