@@ -28,11 +28,11 @@ object StreetScapeUtils {
                 0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat(), paint)
         }
 
-//        // 测试用，绘制文本框
-//        paint.color = Color.RED
-//        streetScape.textBoxList.forEach {
-//            canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
-//        }
+        // 测试用，绘制文本框
+        paint.color = Color.RED
+        streetScape.textBoxList.forEach {
+            canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
+        }
 
         // 绘制文本
         paint.color = textColor
