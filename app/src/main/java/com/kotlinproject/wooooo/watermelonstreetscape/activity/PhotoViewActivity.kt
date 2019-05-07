@@ -16,6 +16,7 @@ import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.StreetScapeUtils
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_photo_view.*
+import kotlinx.android.synthetic.main.include_app_bar.*
 import kotlin.concurrent.thread
 import kotlin.math.PI
 import kotlin.math.cos
@@ -30,15 +31,16 @@ class PhotoViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_view)
-        streetScape = intent.getParcelableExtra(BUNDLE_STREET_SCAPE)
+
+        streetScape = intent.getParcelableExtra(EXTRA_STREET_SCAPE)
 
         // toolbar
-        setSupportActionBar(toolbar_photo_view)
+        setSupportActionBar(toolbar_app)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             title = streetScape.mostImportantText
         }
-        toolbar_photo_view.setNavigationOnClickListener { finish() }
+        toolbar_app.setNavigationOnClickListener { finish() }
 
         if (!streetScape.photoFile.exists()) {
             ToastUtils.showTextShort(this, "找不到图片 ${streetScape.mostImportantText}")
@@ -145,6 +147,6 @@ class PhotoViewActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val BUNDLE_STREET_SCAPE = "street_scape"
+        const val EXTRA_STREET_SCAPE = "street_scape"
     }
 }

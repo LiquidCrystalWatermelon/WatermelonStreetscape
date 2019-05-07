@@ -8,18 +8,7 @@
     android:orientation="vertical"
     tools:context=".activity.PhotoViewActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!-- android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" -->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_photo_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"/>
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/include_app_bar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
