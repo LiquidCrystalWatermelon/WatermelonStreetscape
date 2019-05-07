@@ -16,6 +16,9 @@ import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.StreetScapeUtils
 import kotlinx.android.synthetic.main.activity_photo_view.*
 import kotlin.concurrent.thread
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 class PhotoViewActivity : AppCompatActivity() {
@@ -81,7 +84,14 @@ class PhotoViewActivity : AppCompatActivity() {
                     .let { it.x to it.y }
                 streetScape
                     .textBoxList
-                    .filter { x in it.x0..it.x1 && y in it.y0..it.y1 }
+                    .filter {
+                        val cx = (it.x0 + it.x1) / 2
+                        val cy = (it.y0 + it.y1) / 2
+                        val angle = -PI * it.degree / 180
+                        val mapX = (x - cx) * cos(angle) - (y - cy) * sin(angle) + cx
+                        val mapY = (x - cx) * sin(angle) + (y - cy) * cos(angle) + cy
+                        mapX in it.x0..it.x1 && mapY in it.y0..it.y1
+                    }
                     .joinToString("\n\n") { it.text }
                     .let {
                         if (it.isNotBlank()) {

@@ -27,16 +27,18 @@ object FakeHttpClient : HttpClientInterface {
         val width = bitmap.width
         val height = bitmap.height
         val textBoxList = (1..Random.nextInt(10)).map {
-            val x = Random.nextInt(width).toFloat()
+            val x = Random.nextInt(width * 9 / 10).toFloat()
             val y = Random.nextInt(height).toFloat()
             val xe = Random.nextInt(x.toInt(), min(x + width / 2, width.toFloat()).toInt()).toFloat()
             val ye = min(y + height / 10, height.toFloat()).toInt().toFloat()
             val w = Random.nextInt(width / 2).toFloat()
             val h = Random.nextInt(height / 10).toFloat()
-            val s = (1..Random.nextInt(100))
-                .map { (Random.nextInt(26) - 'a'.toInt()).toChar() }
+            val degree = Random.nextInt(360).toFloat()
+            val s = (1..Random.nextInt(50))
+//                .map { (Random.nextInt(26) + 'a'.toInt()).toChar() }
+                .map { Random.nextInt(0x4e00, 0x9fa5).toChar() }
                 .joinToString("")
-            TextBox(x, y, xe, ye, s)
+            TextBox(x, y, xe, ye, s, degree)
         }
         val result = TranslateStreetScape(bitmapPath, textBoxList)
         callback.onResponse(result as T)

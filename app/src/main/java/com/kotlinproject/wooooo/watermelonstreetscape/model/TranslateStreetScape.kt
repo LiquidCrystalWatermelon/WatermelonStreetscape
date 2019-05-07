@@ -8,7 +8,8 @@ import java.io.File
 
 data class TranslateStreetScape(
     val photoPath: String,
-    val textBoxList: List<TextBox>
+    val textBoxList: List<TextBox>,
+    val timeStamp: Long = System.currentTimeMillis()
 ) : Parcelable {
     val mostImportantText by lazy {
         textBoxList.maxBy { Math.abs(it.x1 - it.x0) * Math.abs(it.y1 - it.y0) }
@@ -21,16 +22,16 @@ data class TranslateStreetScape(
 
     constructor(parcel: Parcel) : this(
         parcel.readString(),
-        parcel.createTypedArrayList(TextBox))
+        parcel.createTypedArrayList(TextBox),
+        parcel.readLong())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(photoPath)
         parcel.writeTypedList(textBoxList)
+        parcel.writeLong(timeStamp)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<TranslateStreetScape> {
         override fun createFromParcel(parcel: Parcel): TranslateStreetScape {

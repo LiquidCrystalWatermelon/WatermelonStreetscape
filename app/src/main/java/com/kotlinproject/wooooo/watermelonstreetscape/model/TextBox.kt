@@ -8,14 +8,16 @@ data class TextBox(
     val y0: Float,
     val x1: Float,
     val y1: Float,
-    val text: String
+    val text: String,
+    val degree: Float = 0f
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readFloat(),
         parcel.readFloat(),
         parcel.readFloat(),
         parcel.readFloat(),
-        parcel.readString())
+        parcel.readString(),
+        parcel.readFloat())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeFloat(x0)
@@ -23,11 +25,10 @@ data class TextBox(
         parcel.writeFloat(x1)
         parcel.writeFloat(y1)
         parcel.writeString(text)
+        parcel.writeFloat(degree)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<TextBox> {
         override fun createFromParcel(parcel: Parcel): TextBox {

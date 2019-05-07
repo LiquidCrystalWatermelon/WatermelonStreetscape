@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
 import java.io.FileOutputStream
 
@@ -177,8 +178,9 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(item: TranslateStreetScape) {
                 // 加入列表
-                adapter.itemList.add(item)
+                adapter.itemList.add(0, item)
                 adapter.notifyDataSetChanged()
+                Log.i(TAG, ": TranslateStreetScape ${item.timeStamp}")
             }
         })
     }
