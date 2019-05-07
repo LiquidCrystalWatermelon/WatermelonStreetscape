@@ -24,12 +24,10 @@ import com.kotlinproject.wooooo.watermelonstreetscape.http.HttpClient
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
-import java.io.IOException
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
-import java.io.FileOutputStream
+import java.io.*
 
 /*
  * 相机和相册接收或返回的格式均是 uri
@@ -70,6 +68,9 @@ class MainActivity : AppCompatActivity() {
     /** 适配器 */
     private val adapter by lazy { PhotoItemAdapter(this, mutableListOf()) }
 
+    private val appDataFilePath = Environment
+        .getExternalStorageDirectory().path + "/WatermelonStreetScape"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -109,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        title = "西瓜街景"
+        title = getString(R.string.app_name_cn)
         fab_take_photo.setOnClickListener(this::onFabClick)
         rv_photo_item.adapter = adapter
         rv_photo_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -119,6 +120,13 @@ class MainActivity : AppCompatActivity() {
                 if (dy < 0) fabShow()
             }
         })
+        // 从本地读取街景文件
+        File("$appDataFilePath/scape/")
+            .takeIf { it.exists() }
+            ?.listFiles { _, str -> str.endsWith(".sca") }
+            ?.map { ObjectInputStream(FileInputStream(it)).use { it.readObject() as TranslateStreetScape } }
+            ?.sortedByDescending { it.timeStamp }
+            ?.let { adapter.itemList.addAll(it) }
     }
 
     private fun onFabClick(view: View) {
@@ -177,6 +185,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponse(item: TranslateStreetScape) {
+                // 写入本地
+                val objFile = scapeFilePath(item.timeStamp)
+                File(objFile).parentFile.let {
+                    if (!it.exists()) it.mkdirs()
+                }
+                ObjectOutputStream(FileOutputStream(objFile)).use {
+                    it.writeObject(item)
+                }
+
                 // 加入列表
                 adapter.itemList.add(0, item)
                 adapter.notifyDataSetChanged()
@@ -185,7 +202,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun imageFilePath(imgName: Any) = Environment
-        .getExternalStorageDirectory().path +
-        "/WatermelonStreetScape/image/$imgName.jpg"
+    private fun imageFilePath(imgName: Any) = "$appDataFilePath/image/$imgName.jpg"
+
+    private fun scapeFilePath(scapeName: Any) = "$appDataFilePath/scape/$scapeName.sca"
 }

@@ -5,12 +5,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
 import java.io.File
+import java.io.Serializable
 
 data class TranslateStreetScape(
     val photoPath: String,
     val textBoxList: List<TextBox>,
     val timeStamp: Long = System.currentTimeMillis()
-) : Parcelable {
+) : Parcelable, Serializable {
     val mostImportantText by lazy {
         textBoxList.maxBy { Math.abs(it.x1 - it.x0) * Math.abs(it.y1 - it.y0) }
             ?.text ?: ""

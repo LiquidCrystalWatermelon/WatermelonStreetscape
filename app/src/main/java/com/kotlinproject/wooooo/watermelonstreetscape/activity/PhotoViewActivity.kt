@@ -14,6 +14,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.StreetScapeUtils
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_photo_view.*
 import kotlin.concurrent.thread
 import kotlin.math.PI
@@ -38,6 +39,12 @@ class PhotoViewActivity : AppCompatActivity() {
             title = streetScape.mostImportantText
         }
         toolbar_photo_view.setNavigationOnClickListener { finish() }
+
+        if (!streetScape.photoFile.exists()) {
+            ToastUtils.showTextShort(this, "找不到图片 ${streetScape.mostImportantText}")
+            finish()
+            return
+        }
 
         // 获取写上文字的图片
         textBitmap = StreetScapeUtils.draw(streetScape)

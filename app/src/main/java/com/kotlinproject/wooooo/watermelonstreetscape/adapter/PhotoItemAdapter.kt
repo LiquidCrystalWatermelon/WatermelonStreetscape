@@ -2,6 +2,7 @@ package com.kotlinproject.wooooo.watermelonstreetscape.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.os.Parcelable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,7 @@ class PhotoItemAdapter(
             Glide.with(context).load(item.photoFile).into(ivPhoto)
             itemView.setOnClickListener {
                 val intent = Intent(context, PhotoViewActivity::class.java)
-                intent.putExtra(PhotoViewActivity.BUNDLE_STREET_SCAPE, item)
+                intent.putExtra(PhotoViewActivity.BUNDLE_STREET_SCAPE, item as Parcelable)
                 context.startActivity(intent)
             }
         }
