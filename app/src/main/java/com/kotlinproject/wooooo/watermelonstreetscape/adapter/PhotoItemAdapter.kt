@@ -1,8 +1,10 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +38,9 @@ class PhotoItemAdapter(
             itemView.setOnClickListener {
                 val intent = Intent(context, PhotoViewActivity::class.java)
                 intent.putExtra(PhotoViewActivity.EXTRA_STREET_SCAPE, item as Parcelable)
+//                val optionsCompact = ActivityOptionsCompat
+//                    .makeSceneTransitionAnimation(context as Activity, ivPhoto, "share_img")
+//                context.startActivity(intent,optionsCompact.toBundle())
                 context.startActivity(intent)
             }
             // 长按编辑

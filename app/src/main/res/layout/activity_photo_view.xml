@@ -17,6 +17,7 @@
         <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
             android:id="@+id/siv_photo_view_with_text"
             android:layout_width="match_parent"
+            android:transitionName="share_img"
             android:layout_height="match_parent"/>
 
         <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
