@@ -218,9 +218,20 @@ class MainActivity : AppCompatActivity() {
             val curY = rv_photo_item.computeVerticalScrollOffset()
             rv_photo_item.scrollBy(0, scrollY - curY)
         }
-        // TODO 移除元素
-        val indexes = data.getIntArrayExtra(EXTRA_DELETE_ITEMS_INDEX)?.toList()
-        Log.d(TAG, ": delete index: $indexes")
+        // 移除元素
+        val indexes = data.getIntArrayExtra(EXTRA_DELETE_ITEMS_INDEX)
+        indexes
+            ?.takeIf { it.isNotEmpty() }
+            ?.map {
+                adapter.notifyItemRemoved(it)
+                adapter.itemList[it]
+            }
+            ?.apply { adapter.itemList.removeAll(this) }
+            ?.forEach {
+                it.photoFile.apply { if (exists()) delete() }
+                it.scapeFile?.apply { if (exists()) delete() }
+            }
+            ?.let { adapter.notifyItemRangeChanged(indexes.min()!!, adapter.itemCount) }
     }
 
     private fun imageFilePath(imgName: Any) = "$appDataFilePath/image/$imgName.jpg"
