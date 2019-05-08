@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_photo_item"
     android:layout_width="match_parent"
+    android:clickable="true"
+    android:longClickable="true"
+    android:focusable="true"
     android:layout_height="wrap_content"
     android:layout_margin="1dp">
 
@@ -27,7 +30,7 @@
         android:id="@+id/view_unselected_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#40FFFFFF"
+        android:background="#88FFFFFF"
         android:visibility="gone"
         tools:visibility="gone"/>
 

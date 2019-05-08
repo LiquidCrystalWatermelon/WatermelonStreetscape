@@ -12,6 +12,8 @@
         android:id="@+id/rv_photo_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="?actionBarSize"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
         app:spanCount="2"
         tools:listitem="@layout/view_photo_item"/>
@@ -22,12 +24,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:backgroundTint="@color/colorAccentDark"
-        app:backgroundTint="@color/colorAccentDark"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/colorAccentDark"
         android:clickable="true"
         android:focusable="true"
         android:tint="?colorBackgroundFloating"
+        app:backgroundTint="@color/colorAccentDark"
         app:srcCompat="@drawable/ic_photo_camera_black_24dp"/>
 
 

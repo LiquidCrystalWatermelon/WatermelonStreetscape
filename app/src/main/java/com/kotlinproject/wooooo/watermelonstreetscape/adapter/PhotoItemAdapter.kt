@@ -43,7 +43,8 @@ class PhotoItemAdapter(
                 val intent = Intent(context, MainEditActivity::class.java)
                 intent.putExtra(MainEditActivity.EXTRA_SELECTED_ITEM_INDEX, position)
                 intent.putExtra(MainEditActivity.EXTRA_ITEMS, itemList.toTypedArray())
-                intent.putExtra(MainEditActivity.EXTRA_SCROLL_Y,(context as MainActivity).rv_photo_item.scrollY)
+                intent.putExtra(MainEditActivity.EXTRA_SCROLL_Y,(context as MainActivity).rv_photo_item.computeVerticalScrollOffset())
+                context.startActivity(intent)
                 true
             }
         }

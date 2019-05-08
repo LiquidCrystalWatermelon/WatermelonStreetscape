@@ -2,12 +2,18 @@ package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.adapter.EditPhotoItemAdapter
+import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlinx.android.synthetic.main.activity_main_edit.*
 import kotlinx.android.synthetic.main.include_app_bar.*
+import kotlin.concurrent.thread
 
 class MainEditActivity : AppCompatActivity() {
+    private val TAG = "MainEditActivity_Log"
 
     private val adapter by lazy { EditPhotoItemAdapter(this, mutableListOf()) }
 
@@ -22,7 +28,18 @@ class MainEditActivity : AppCompatActivity() {
         toolbar_app.setNavigationOnClickListener { finish() }
 
         // 取出数据
-//        val
+        val items = intent.getParcelableArrayExtra(EXTRA_ITEMS).map { it as TranslateStreetScape }
+        val selectedIndex = intent.getIntExtra(EXTRA_SELECTED_ITEM_INDEX, 0)
+        val scrollY = intent.getIntExtra(EXTRA_SCROLL_Y, 0)
+
+        // 配置列表
+        adapter.itemList.addAll(items)
+        adapter.selectedItemSet.add(items[selectedIndex])
+        adapter.setSelectedCountChangedListener {
+            setTitleCount(it)
+        }
+        rv_photo_item.adapter = adapter
+        thread { runOnUiThread { rv_photo_item.scrollBy(0, scrollY) } }
     }
 
     private fun setTitleCount(count: Int) {
