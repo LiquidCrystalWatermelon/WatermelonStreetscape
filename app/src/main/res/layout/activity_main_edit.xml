@@ -26,6 +26,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_height="?actionBarSize"
             android:layout_alignParentBottom="true"
             android:background="?colorBackgroundFloating">

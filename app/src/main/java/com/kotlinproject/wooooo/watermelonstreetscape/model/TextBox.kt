@@ -12,6 +12,7 @@ data class TextBox(
     val text: String,
     val degree: Float = 0f
 ) : Parcelable, Serializable {
+
     constructor(parcel: Parcel) : this(
         parcel.readFloat(),
         parcel.readFloat(),
@@ -32,6 +33,8 @@ data class TextBox(
     override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<TextBox> {
+        private const val serialVersionUID = 4380838812587594199
+
         override fun createFromParcel(parcel: Parcel): TextBox {
             return TextBox(parcel)
         }

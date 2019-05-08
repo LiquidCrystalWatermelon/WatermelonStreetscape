@@ -60,10 +60,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // requestCode
-    private val allPermissionRequestCode = 2625
-    private val albumRequestCode = 2626
-    private val cameraRequestCode = 2627
 
     /** 适配器 */
     private val adapter by lazy { PhotoItemAdapter(this, mutableListOf()) }
@@ -86,12 +82,12 @@ class MainActivity : AppCompatActivity() {
             onAllPermissionGranted()
         } else {
             ActivityCompat.requestPermissions(
-                this, toRequestPermissions.toTypedArray(), allPermissionRequestCode)
+                this, toRequestPermissions.toTypedArray(), REQUEST_ALL_PERMISSION)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == allPermissionRequestCode) {
+        if (requestCode == REQUEST_ALL_PERMISSION) {
             val deniedPermissions = permissions
                 .zip(grantResults.toTypedArray())
                 .filter { it.second != PackageManager.PERMISSION_GRANTED }
@@ -124,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         File("$appDataFilePath/scape/")
             .takeIf { it.exists() }
             ?.listFiles { _, str -> str.endsWith(".sca") }
-            ?.map { ObjectInputStream(FileInputStream(it)).use { it.readObject() as TranslateStreetScape } }
+            ?.map { ObjectInputStream(FileInputStream(it)).use { it.readObject() as TranslateStreetScape }.apply { scapeFile = it } }
             ?.sortedByDescending { it.timeStamp }
             ?.let { adapter.itemList.addAll(it) }
     }
@@ -151,13 +147,13 @@ class MainActivity : AppCompatActivity() {
                 // 选择照片
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
-                startActivityForResult(intent, albumRequestCode)
+                startActivityForResult(intent, REQUEST_ALBUM)
             }
             R.id.menu_item_take_photograph -> {
                 // 打开相机
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, tempPhotoUri)
-                startActivityForResult(intent, cameraRequestCode)
+                startActivityForResult(intent, REQUEST_CAMERA)
             }
         }
         return false
@@ -165,9 +161,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) return
-        // 更新在首页列表中
+        when (requestCode) {
+            REQUEST_ALBUM, REQUEST_CAMERA ->
+                onSelectPhotoResult(requestCode, resultCode, data)
+            REQUEST_MULTI_DELETE          ->
+                onMultiDeleteResult(requestCode, resultCode, data)
+        }
+    }
 
-        val uri = if (requestCode == albumRequestCode) data?.data else tempPhotoUri
+    private fun onSelectPhotoResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        // 更新在首页列表中
+        val uri = if (requestCode == REQUEST_ALBUM) data?.data else tempPhotoUri
         val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
 
         val filePath = imageFilePath(System.currentTimeMillis())
@@ -186,13 +191,14 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(item: TranslateStreetScape) {
                 // 写入本地
-                val objFile = scapeFilePath(item.timeStamp)
-                File(objFile).parentFile.let {
+                val objFile = File(scapeFilePath(item.timeStamp))
+                objFile.parentFile.let {
                     if (!it.exists()) it.mkdirs()
                 }
                 ObjectOutputStream(FileOutputStream(objFile)).use {
                     it.writeObject(item)
                 }
+                item.scapeFile = objFile
 
                 // 加入列表
                 adapter.itemList.add(0, item)
@@ -202,7 +208,34 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun onMultiDeleteResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data == null) return
+
+        // 滚动同步
+        val scrollY = data.getIntExtra(EXTRA_SCROLL_Y, -1)
+        Log.d(TAG, ": scrollY: $scrollY")
+        if (scrollY >= 0) {
+            val curY = rv_photo_item.computeVerticalScrollOffset()
+            rv_photo_item.scrollBy(0, scrollY - curY)
+        }
+        // TODO 移除元素
+        val indexes = data.getIntArrayExtra(EXTRA_DELETE_ITEMS_INDEX)?.toList()
+        Log.d(TAG, ": delete index: $indexes")
+    }
+
     private fun imageFilePath(imgName: Any) = "$appDataFilePath/image/$imgName.jpg"
 
     private fun scapeFilePath(scapeName: Any) = "$appDataFilePath/scape/$scapeName.sca"
+
+    companion object {
+        // requestCode
+        const val REQUEST_ALL_PERMISSION = 2625
+        const val REQUEST_ALBUM = 2626
+        const val REQUEST_CAMERA = 2627
+        const val REQUEST_MULTI_DELETE = 2628
+
+        // extra
+        const val EXTRA_SCROLL_Y = "scroll_y"
+        const val EXTRA_DELETE_ITEMS_INDEX = "delete_items_index"
+    }
 }

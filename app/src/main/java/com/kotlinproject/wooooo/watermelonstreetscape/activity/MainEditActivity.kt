@@ -1,5 +1,7 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -16,6 +18,8 @@ class MainEditActivity : AppCompatActivity() {
     private val TAG = "MainEditActivity_Log"
 
     private val adapter by lazy { EditPhotoItemAdapter(this, mutableListOf()) }
+
+    private val resultIntent = Intent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +44,18 @@ class MainEditActivity : AppCompatActivity() {
         }
         rv_photo_item.adapter = adapter
         thread { runOnUiThread { rv_photo_item.scrollBy(0, scrollY) } }
+
+        // 工具条
+        ll_icon_cancel_all.setOnClickListener { adapter.unselectAll() }
+        ll_icon_select_all.setOnClickListener { adapter.selectAll() }
+        ll_icon_delete.setOnClickListener {
+            val deleteIndex = adapter
+                .selectedItemSet
+                .map { adapter.itemList.indexOf(it) }
+                .toIntArray()
+            resultIntent.putExtra(MainActivity.EXTRA_DELETE_ITEMS_INDEX, deleteIndex)
+            finish()
+        }
     }
 
     private fun setTitleCount(count: Int) {
@@ -50,5 +66,11 @@ class MainEditActivity : AppCompatActivity() {
         const val EXTRA_SELECTED_ITEM_INDEX = "selected_item_index"
         const val EXTRA_ITEMS = "items"
         const val EXTRA_SCROLL_Y = "scroll_y"
+    }
+
+    override fun finish() {
+        resultIntent.putExtra(MainActivity.EXTRA_SCROLL_Y, rv_photo_item.computeVerticalScrollOffset())
+        setResult(Activity.RESULT_OK, resultIntent)
+        super.finish()
     }
 }

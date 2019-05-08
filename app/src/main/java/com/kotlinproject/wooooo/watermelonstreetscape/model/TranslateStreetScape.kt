@@ -12,12 +12,16 @@ data class TranslateStreetScape(
     val textBoxList: List<TextBox>,
     val timeStamp: Long = System.currentTimeMillis()
 ) : Parcelable, Serializable {
+
     val mostImportantText by lazy {
         textBoxList.maxBy { Math.abs(it.x1 - it.x0) * Math.abs(it.y1 - it.y0) }
             ?.text ?: ""
     }
 
     val photoFile by lazy { File(photoPath) }
+
+    @Transient
+    var scapeFile: File? = null
 
     fun getPhotoUri(context: Context) = FileUtils.fileToUri(context, photoFile)
 
@@ -35,6 +39,7 @@ data class TranslateStreetScape(
     override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<TranslateStreetScape> {
+        private const val serialVersionUID = -363304808118067478
         override fun createFromParcel(parcel: Parcel): TranslateStreetScape {
             return TranslateStreetScape(parcel)
         }
