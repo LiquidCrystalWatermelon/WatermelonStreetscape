@@ -1,22 +1,25 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.utils
 
 import android.graphics.*
+import android.util.Log
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 object StreetScapeUtils {
+    private val TAG = "StreetScapeUtils_Log"
     fun draw(
         streetScape: TranslateStreetScape,
         textColor: Int = Color.WHITE,
-        showDarkMask: Boolean = true
+        crowdingTextColor: Int = Color.CYAN,
+        showDarkMask: Boolean = true,
+        showTextBorder: Boolean = false
     ): Bitmap {
         val bitmap = BitmapFactory
             .decodeFile(streetScape.photoPath)
             .copy(Bitmap.Config.ARGB_8888, true)
-//        // 如果图片太小要放大
-//        val minSideLen = 200
+
         val canvas = Canvas(bitmap)
         val paint = Paint()
 
@@ -34,31 +37,45 @@ object StreetScapeUtils {
 //            canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
 //        }
 //
-//        // 测试用，绘制倾斜文本框
-//        paint.color = Color.parseColor("#660000ff")
-//        streetScape.textBoxList.forEach {
-//            val cx = (it.x0 + it.x1) / 2
-//            val cy = (it.y0 + it.y1) / 2
-//            canvas.rotate(it.degree, cx, cy)
-//            canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
-//            canvas.rotate(-it.degree, cx, cy)
-//        }
+        // 绘制倾斜文本框
+        if (showTextBorder) {
+            paint.color = Color.parseColor("#660000ff")
+            streetScape.textBoxList.forEach {
+                val cx = (it.x0 + it.x1) / 2
+                val cy = (it.y0 + it.y1) / 2
+                canvas.rotate(it.degree, cx, cy)
+                canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
+                canvas.rotate(-it.degree, cx, cy)
+            }
+        }
 
         // 绘制文本
-        paint.color = textColor
-        paint.textSize = min(bitmap.width, bitmap.height) / 15f
         streetScape.textBoxList.forEach { box ->
+            val maxTextSize = min(bitmap.width, bitmap.height) / 10f
+            val minTextSize = min(bitmap.width, bitmap.height) / 30f
+            val textSizeStep = min(bitmap.width, bitmap.height) / 100f
             // 先把字符串按行分割，每行最少1个字符
             // 每行平分文本框的高
             val lines = mutableListOf<String>()
-            var text = box.text
-            // 切行
-            while (!text.isBlank()) {
-                val index = paint
-                    .breakText(text, true, box.x1 - box.x0, null)
-                    .let { max(it, 1) }
-                lines.add(text.substring(0, index))
-                text = text.substring(index)
+            paint.color = crowdingTextColor
+            paint.textSize = maxTextSize + textSizeStep
+            while (paint.textSize > minTextSize) {
+                paint.textSize -= textSizeStep
+                var text = box.text
+                lines.clear()
+                val textHeight = abs(paint.fontMetrics.let { it.top + it.bottom })
+                // 切行
+                while (!text.isBlank()) {
+                    val index = paint
+                        .breakText(text, true, box.x1 - box.x0, null)
+                        .let { max(it, 1) }
+                    lines.add(text.substring(0, index))
+                    text = text.substring(index)
+                }
+                if (textHeight < (box.y1 - box.y0) / (lines.size.let { if (it > 1) it + 1 else 1 })) {
+                    paint.color = textColor
+                    break
+                }
             }
             // 旋转画布
             val cx = (box.x0 + box.x1) / 2
