@@ -226,6 +226,7 @@ class MainActivity : AppCompatActivity() {
             ?.takeIf { it.isNotEmpty() }
             ?.map {
                 adapter.notifyItemRemoved(it)
+                Log.d(TAG, ": remove index :$it")
                 adapter.itemList[it]
             }
             ?.apply { adapter.itemList.removeAll(this) }
@@ -233,7 +234,7 @@ class MainActivity : AppCompatActivity() {
                 it.photoFile.apply { if (exists()) delete() }
                 it.scapeFile?.apply { if (exists()) delete() }
             }
-            ?.let { adapter.notifyItemRangeChanged(indexes.min()!!, adapter.itemCount) }
+            ?.let { adapter.notifyItemRangeChanged(indexes.min()!!, indexes.size) }
     }
 
     private fun imageFilePath(imgName: Any) = "$appDataFilePath/image/$imgName.jpg"

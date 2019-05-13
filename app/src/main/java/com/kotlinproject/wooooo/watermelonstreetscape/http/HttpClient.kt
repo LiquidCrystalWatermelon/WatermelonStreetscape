@@ -20,8 +20,8 @@ interface HttpClientInterface {
     fun <T> uploadImage(bitmapPath: String, callback: HttpCallback<T>)
 }
 
-object FakeHttpClient : HttpClientInterface {
-    override fun <T> uploadImage(bitmapPath: String, callback: HttpCallback<T>) {
+object FakeHttpClient {
+    fun uploadImage(bitmapPath: String, callback: HttpCallback<TranslateStreetScape>) {
         val bitmap = BitmapFactory.decodeFile(bitmapPath)
         // 随机生成一些框返回
         val width = bitmap.width
@@ -36,11 +36,15 @@ object FakeHttpClient : HttpClientInterface {
             val degree = Random.nextInt(360).toFloat()
             val s = (1..Random.nextInt(50))
 //                .map { (Random.nextInt(26) + 'a'.toInt()).toChar() }
-                .map { Random.nextInt(0x4e00, 0x9fa5).toChar() }
+                .map { (Random.nextInt(10) + '0'.toInt()).toChar()}
+//                .map { Random.nextInt(0x4e00, 0x9fa5).toChar() }
                 .joinToString("")
             TextBox(x, y, xe, ye, s, degree)
         }
         val result = TranslateStreetScape(bitmapPath, textBoxList)
-        callback.onResponse(result as T)
+        callback.onResponse(result)
+    }
+
+    fun translateScape(scape: TranslateStreetScape) {
     }
 }
