@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 data class TextBox(
     val x0: Float,
     val y0: Float,

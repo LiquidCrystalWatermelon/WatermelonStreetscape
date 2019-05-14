@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
+import kotlinx.serialization.ImplicitReflectionSerializer
 import java.io.*
 
 /*
@@ -35,6 +36,7 @@ import java.io.*
  * OkHttp 上传仅支持 file
  * 总之一定要有一个 uri 转 file 的过程
  */
+
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity_Log"
@@ -159,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+    @ImplicitReflectionSerializer
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) return
         when (requestCode) {
@@ -169,6 +172,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @ImplicitReflectionSerializer
     private fun onSelectPhotoResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         // 更新在首页列表中
@@ -184,8 +188,8 @@ class MainActivity : AppCompatActivity() {
             it.flush()
         }
 
-        HttpClient.uploadImage(filePath, object : HttpCallback<TranslateStreetScape> {
-            override fun onFailure(e: IOException?) {
+        HttpClient.uploadImage(this, filePath, object : HttpCallback<TranslateStreetScape> {
+            override fun onFailure(e: Exception?) {
                 ToastUtils.showTextShort(this@MainActivity, "图像上传失败")
             }
 

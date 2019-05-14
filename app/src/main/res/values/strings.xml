@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WatermelonStreetscape</string>
-    <string name="app_name_cn">西瓜街景</string>
+    <!--<string name="app_name_cn">西瓜街景</string>-->
+    <string name="app_name_cn">Unity</string>
 </resources>
