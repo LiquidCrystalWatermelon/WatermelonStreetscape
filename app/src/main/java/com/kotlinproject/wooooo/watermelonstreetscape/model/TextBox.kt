@@ -2,6 +2,7 @@ package com.kotlinproject.wooooo.watermelonstreetscape.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.serialization.Optional
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
@@ -11,7 +12,7 @@ data class TextBox(
     val x1: Float,
     val y1: Float,
     val text: String,
-    val degree: Float = 0f
+    @Optional val degree: Float = 0f
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(

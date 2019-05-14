@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TextBox
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parse
 import kotlinx.serialization.parseList
@@ -86,6 +87,7 @@ object FakeHttpClient {
         }
     }
 
+    @UnstableDefault
     @ImplicitReflectionSerializer
     fun uploadImage(activity: Activity, bitmapPath: String, callback: HttpCallback<TranslateStreetScape>) {
         thread {
@@ -112,7 +114,7 @@ object FakeHttpClient {
 
             activity.runOnUiThread {
                 try {
-                    val result = response.body()?.string()?.let { Json.parseList<TextBox>(it) }
+                    val result = response.body()?.string()?.let { Json.nonstrict.parseList<TextBox>(it) }
                     if (result == null) {
                         callback.onFailure(NullPointerException("Empty response body!"))
                     } else {
