@@ -206,9 +206,10 @@ class MainActivity : AppCompatActivity() {
 
                 // 加入列表
                 adapter.itemList.add(0, item)
-//                adapter.notifyItemInserted(0)
-//                adapter.notifyItemRangeChanged(0,adapter.itemCount)
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemInserted(0)
+                adapter.notifyItemRangeChanged(0,adapter.itemCount)
+                rv_photo_item.scrollToPosition(0)
+//                adapter.notifyDataSetChanged()
                 Log.i(TAG, ": TranslateStreetScape ${item.timeStamp}")
             }
         })
