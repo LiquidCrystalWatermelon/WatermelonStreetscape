@@ -2,6 +2,7 @@ package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
 import android.Manifest
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -14,6 +15,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -26,7 +28,9 @@ import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.EditText
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import kotlinx.serialization.ImplicitReflectionSerializer
 import java.io.*
 
@@ -109,7 +113,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         title = getString(R.string.app_name_cn)
-        fab_take_photo.setOnClickListener(this::onFabClick)
+        fab_take_photo.isLongClickable = true
+        fab_take_photo.setOnClickListener(::onFabClick)
+        fab_take_photo.setOnLongClickListener(::onFabLongClick)
         rv_photo_item.adapter = adapter
         rv_photo_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -122,9 +128,26 @@ class MainActivity : AppCompatActivity() {
         File("$appDataFilePath/scape/")
             .takeIf { it.exists() }
             ?.listFiles { _, str -> str.endsWith(".sca") }
-            ?.map { ObjectInputStream(FileInputStream(it)).use { it.readObject() as TranslateStreetScape }.apply { scapeFile = it } }
+            ?.map {
+                ObjectInputStream(FileInputStream(it))
+                    .use { it.readObject() as TranslateStreetScape }
+                    .apply { scapeFile = it }
+            }
             ?.sortedByDescending { it.timeStamp }
             ?.let { adapter.itemList.addAll(it) }
+    }
+
+    private fun onFabLongClick(view: View): Boolean {
+        val et = EditText(this)
+        et.setText(spServiceIp)
+        AlertDialog
+            .Builder(this)
+            .setTitle("修改服务器ip地址：")
+            .setView(et)
+            .setNegativeButton("取消", null)
+            .setPositiveButton("确定") { _, _ -> spServiceIp = et.text.toString() }
+            .show()
+        return true
     }
 
     private fun onFabClick(view: View) {
@@ -207,7 +230,7 @@ class MainActivity : AppCompatActivity() {
                 // 加入列表
                 adapter.itemList.add(0, item)
                 adapter.notifyItemInserted(0)
-                adapter.notifyItemRangeChanged(0,adapter.itemCount)
+                adapter.notifyItemRangeChanged(0, adapter.itemCount)
                 rv_photo_item.scrollToPosition(0)
 //                adapter.notifyDataSetChanged()
                 Log.i(TAG, ": TranslateStreetScape ${item.timeStamp}")

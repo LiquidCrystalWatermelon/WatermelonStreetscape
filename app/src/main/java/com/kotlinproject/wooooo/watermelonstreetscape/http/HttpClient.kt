@@ -1,19 +1,16 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.http
 
 import android.app.Activity
-import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TextBox
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.parse
 import kotlinx.serialization.parseList
 import okhttp3.*
 import java.io.File
-import java.io.IOException
 import java.lang.Exception
 import java.lang.NullPointerException
 import kotlin.concurrent.thread
@@ -99,7 +96,7 @@ object FakeHttpClient {
                 .build()
             val request = Request
                 .Builder()
-                .url("http://192.168.0.106:5000/upload_img")
+                .url("http://${activity.spServiceIp}/upload_img")
                 .post(requestBody)
                 .build()
             val response = try {
