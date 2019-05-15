@@ -32,5 +32,16 @@
         app:backgroundTint="@color/colorAccentDark"
         app:srcCompat="@drawable/ic_photo_camera_black_24dp"/>
 
+    <ProgressBar
+        android:id="@+id/pb_uploading"
+        android:visibility="gone"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-7dp"
+        android:indeterminate="true"
+        android:indeterminateBehavior="repeat"/>
+
 
 </RelativeLayout>

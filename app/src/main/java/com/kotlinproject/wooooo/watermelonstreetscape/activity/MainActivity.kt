@@ -2,7 +2,6 @@ package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
 import android.Manifest
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -197,8 +196,8 @@ class MainActivity : AppCompatActivity() {
 
     @ImplicitReflectionSerializer
     private fun onSelectPhotoResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         // 更新在首页列表中
+        pb_uploading.visibility = View.VISIBLE
         val uri = if (requestCode == REQUEST_ALBUM) data?.data else tempPhotoUri
         val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
 
@@ -213,10 +212,12 @@ class MainActivity : AppCompatActivity() {
 
         HttpClient.uploadImage(this, filePath, object : HttpCallback<TranslateStreetScape> {
             override fun onFailure(e: Exception?) {
+                pb_uploading.visibility = View.GONE
                 ToastUtils.showTextShort(this@MainActivity, "图像上传失败")
             }
 
             override fun onResponse(item: TranslateStreetScape) {
+                pb_uploading.visibility = View.GONE
                 // 写入本地
                 val objFile = File(scapeFilePath(item.timeStamp))
                 objFile.parentFile.let {
