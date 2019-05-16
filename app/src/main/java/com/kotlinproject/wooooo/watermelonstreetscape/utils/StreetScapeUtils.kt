@@ -13,9 +13,9 @@ object StreetScapeUtils {
         streetScape: TranslateStreetScape,
         textColor: Int = Color.WHITE,
         crowdingTextColor: Int = Color.CYAN,
-        showDarkMask: Boolean = true,
+        showDarkMask: Boolean = false,
         darkMaskColor: Int = Color.parseColor("#66000000"),
-        showTextBorder: Boolean = false,
+        showTextBorder: Boolean = true,
         textBorderColor: Int = Color.parseColor("#66000000")
     ): Bitmap {
         val bitmap = BitmapFactory

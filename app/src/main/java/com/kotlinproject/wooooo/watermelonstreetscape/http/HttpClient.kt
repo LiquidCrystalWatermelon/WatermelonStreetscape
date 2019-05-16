@@ -13,6 +13,7 @@ import okhttp3.*
 import java.io.File
 import java.lang.Exception
 import java.lang.NullPointerException
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.math.min
 import kotlin.random.Random
@@ -68,6 +69,9 @@ object FakeHttpClient {
                 .post(requestBody)
                 .build()
             val response = OkHttpClient()
+                .newBuilder()
+                .connectTimeout(60L, TimeUnit.SECONDS)
+                .build()
                 .newCall(request)
                 .execute()
 
@@ -99,10 +103,17 @@ object FakeHttpClient {
                 .url("http://${activity.spServiceIp}/upload_img")
                 .post(requestBody)
                 .build()
-            val response = try {
+            val result = try {
                 OkHttpClient()
+                    .newBuilder()
+                    .connectTimeout(60L, TimeUnit.SECONDS)
+                    .callTimeout(60L, TimeUnit.SECONDS)
+                    .build()
                     .newCall(request)
                     .execute()
+                    .body()
+                    ?.string()
+                    ?.let { Json.nonstrict.parseList<TextBox>(it) }
             } catch (e: Exception) {
                 e.printStackTrace()
                 activity.runOnUiThread { callback.onFailure(e) }
@@ -110,17 +121,10 @@ object FakeHttpClient {
             }
 
             activity.runOnUiThread {
-                try {
-                    val result = response.body()?.string()?.let { Json.nonstrict.parseList<TextBox>(it) }
-                    if (result == null) {
-                        callback.onFailure(NullPointerException("Empty response body!"))
-                    } else {
-                        callback.onResponse(TranslateStreetScape(bitmapPath, result))
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    callback.onFailure(e)
+                if (result == null) {
+                    callback.onFailure(NullPointerException("Empty response body!"))
+                } else {
+                    callback.onResponse(TranslateStreetScape(bitmapPath, result))
                 }
             }
         }
