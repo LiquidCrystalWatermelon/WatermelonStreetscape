@@ -1,7 +1,6 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.utils
 
 import android.graphics.*
-import android.util.Log
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlin.math.abs
 import kotlin.math.max
@@ -13,10 +12,11 @@ object StreetScapeUtils {
         streetScape: TranslateStreetScape,
         textColor: Int = Color.WHITE,
         crowdingTextColor: Int = Color.CYAN,
-        showDarkMask: Boolean = false,
+        showDarkMask: Boolean = true,
         darkMaskColor: Int = Color.parseColor("#66000000"),
-        showTextBorder: Boolean = true,
-        textBorderColor: Int = Color.parseColor("#66000000")
+        showTextBorder: Boolean = false,
+        textBorderColor: Int = Color.parseColor("#66000000"),
+        textBorderStyle: Paint.Style = Paint.Style.FILL
     ): Bitmap {
         val bitmap = BitmapFactory
             .decodeFile(streetScape.photoPath)
@@ -42,6 +42,7 @@ object StreetScapeUtils {
         // 绘制倾斜文本框
         if (showTextBorder) {
             paint.color = textBorderColor
+            paint.style = textBorderStyle
             streetScape.textBoxList.forEach {
                 val cx = (it.x0 + it.x1) / 2
                 val cy = (it.y0 + it.y1) / 2
@@ -53,7 +54,7 @@ object StreetScapeUtils {
 
         // 绘制文本
         streetScape.textBoxList.forEach { box ->
-            val maxTextSize = min(bitmap.width, bitmap.height) / 10f
+            val maxTextSize = min(bitmap.width, bitmap.height) / 4f
             val minTextSize = min(bitmap.width, bitmap.height) / 30f
             val textSizeStep = min(bitmap.width, bitmap.height) / 100f
             // 先把字符串按行分割，每行最少1个字符
@@ -79,6 +80,10 @@ object StreetScapeUtils {
                     break
                 }
             }
+
+            // 临时附加：标红文本
+            if (box.tag == "red") paint.color = Color.RED
+
             // 旋转画布
             val cx = (box.x0 + box.x1) / 2
             val cy = (box.y0 + box.y1) / 2

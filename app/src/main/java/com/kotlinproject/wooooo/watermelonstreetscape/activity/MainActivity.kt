@@ -23,13 +23,13 @@ import com.kotlinproject.wooooo.watermelonstreetscape.adapter.PhotoItemAdapter
 import com.kotlinproject.wooooo.watermelonstreetscape.http.HttpCallback
 import com.kotlinproject.wooooo.watermelonstreetscape.http.HttpClient
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
-import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.EditText
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.toast
 import kotlinx.serialization.ImplicitReflectionSerializer
 import java.io.*
 
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
         HttpClient.uploadImage(this, filePath, object : HttpCallback<TranslateStreetScape> {
             override fun onFailure(e: Exception?) {
                 pb_uploading.visibility = View.GONE
-                ToastUtils.showTextShort(this@MainActivity, "图像上传失败")
+                toast("图像上传失败")
             }
 
             override fun onResponse(item: TranslateStreetScape) {

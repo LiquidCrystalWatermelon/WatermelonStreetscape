@@ -12,7 +12,8 @@ data class TextBox(
     val x1: Float,
     val y1: Float,
     val text: String,
-    @Optional val degree: Float = 0f
+    @Optional val degree: Float = 0f,
+    @Optional val tag: String? = null
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
@@ -21,7 +22,8 @@ data class TextBox(
         parcel.readFloat(),
         parcel.readFloat(),
         parcel.readString(),
-        parcel.readFloat())
+        parcel.readFloat(),
+        parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeFloat(x0)
@@ -30,6 +32,7 @@ data class TextBox(
         parcel.writeFloat(y1)
         parcel.writeString(text)
         parcel.writeFloat(degree)
+        parcel.writeString(tag)
     }
 
     override fun describeContents(): Int = 0
