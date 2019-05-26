@@ -15,8 +15,12 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@drawable/watermelon_logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppThemeNoBar"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:theme="@style/SettingTheme">
+        </activity>
         <activity
             android:name=".activity.MainEditActivity"
             android:theme="@style/ThemeNoBarNoAnimate">
@@ -28,6 +32,7 @@
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

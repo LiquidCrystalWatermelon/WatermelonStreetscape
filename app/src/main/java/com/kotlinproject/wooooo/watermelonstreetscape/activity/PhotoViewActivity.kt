@@ -13,9 +13,7 @@ import android.view.ViewAnimationUtils
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
-import com.kotlinproject.wooooo.watermelonstreetscape.utils.StreetScapeUtils
-import com.kotlinproject.wooooo.watermelonstreetscape.utils.ToastUtils
-import com.kotlinproject.wooooo.watermelonstreetscape.utils.toast
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.*
 import kotlinx.android.synthetic.main.activity_photo_view.*
 import kotlinx.android.synthetic.main.include_app_bar.*
 import kotlin.concurrent.thread
@@ -51,7 +49,10 @@ class PhotoViewActivity : AppCompatActivity() {
 
         // 获取写上文字的图片
         textBitmap = StreetScapeUtils.draw(
-            streetScape, showDarkMask = false, showTextBorder = true
+            streetScape,
+            highlightCrowdingText = spHighLightCrowdingText,
+            showDarkMask = spIsBackgroundDark,
+            showTextBorder = spShowTextBorder
         )
 
         siv_photo_view_with_text.setMinimumDpi(40)

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="街景预览">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="is_background_dark"
+            android:title="背景变暗"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="show_text_border"
+            android:title="显示文本框"/>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="highlight_crowding_text"
+            android:title="拥挤文本高亮"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="内存管理">
+        <Preference android:title="清除数据" android:key="data_clear"/>
+    </PreferenceCategory>
+</PreferenceScreen>

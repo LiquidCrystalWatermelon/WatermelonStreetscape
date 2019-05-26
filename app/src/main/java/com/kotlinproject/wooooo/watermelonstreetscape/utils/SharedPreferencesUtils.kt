@@ -2,6 +2,7 @@ package com.kotlinproject.wooooo.watermelonstreetscape.utils
 
 import android.app.Activity
 import android.content.Context
+import android.preference.PreferenceManager
 
 var Context.spServiceIp: String?
     get() {
@@ -13,3 +14,13 @@ var Context.spServiceIp: String?
         spe.putString("service_ip", value)
         spe.apply()
     }
+
+private fun Context.spBoolean(s: String, default: Boolean) = PreferenceManager
+    .getDefaultSharedPreferences(this)
+    .getBoolean(s, default)
+
+val Context.spIsBackgroundDark get() = spBoolean("is_background_dark", true)
+
+val Context.spShowTextBorder get() = spBoolean("show_text_border", false)
+
+val Context.spHighLightCrowdingText get() = spBoolean("highlight_crowding_text", true)

@@ -11,6 +11,7 @@ object StreetScapeUtils {
     fun draw(
         streetScape: TranslateStreetScape,
         textColor: Int = Color.WHITE,
+        highlightCrowdingText: Boolean = true,
         crowdingTextColor: Int = Color.CYAN,
         showDarkMask: Boolean = true,
         darkMaskColor: Int = Color.parseColor("#66000000"),
@@ -51,6 +52,9 @@ object StreetScapeUtils {
                 canvas.rotate(-it.degree, cx, cy)
             }
         }
+
+        val crowdingTextColor =
+            if (highlightCrowdingText) crowdingTextColor else textColor
 
         // 绘制文本
         streetScape.textBoxList.forEach { box ->

@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -26,10 +25,12 @@ import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Gravity
 import android.widget.EditText
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.toast
+import kotlinx.android.synthetic.main.include_app_bar.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import java.io.*
 
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     /** 拍照临时图片存放 uri */
     private val tempPhotoUri by lazy {
-        val file = File(imageFilePath("temp"))
+        val file = File(FileUtils.imageFilePath("temp"))
         file.parentFile.let {
             if (!it.exists()) it.mkdirs()
         }
@@ -68,9 +69,6 @@ class MainActivity : AppCompatActivity() {
 
     /** 适配器 */
     private val adapter by lazy { PhotoItemAdapter(this, mutableListOf()) }
-
-    private val appDataFilePath = Environment
-        .getExternalStorageDirectory().path + "/WatermelonStreetScape"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,6 +110,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         title = getString(R.string.app_name_cn)
+
+        setSupportActionBar(toolbar_app)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+
+        nav_view.setCheckedItem(R.id.menu_item_home)
+        nav_view.setNavigationItemSelectedListener(::onNavItemSelected)
+
         fab_take_photo.isLongClickable = true
         fab_take_photo.setOnClickListener(::onFabClick)
         fab_take_photo.setOnLongClickListener(::onFabLongClick)
@@ -124,7 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         // 从本地读取街景文件
-        File("$appDataFilePath/scape/")
+        File(FileUtils.scapeDictPath)
             .takeIf { it.exists() }
             ?.listFiles { _, str -> str.endsWith(".sca") }
             ?.map {
@@ -165,6 +171,24 @@ class MainActivity : AppCompatActivity() {
     private fun fabHidePopup() = fabMoveY(-200f)
     private fun fabShow() = fabMoveY(0f)
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> dl_nav.openDrawer(Gravity.START)
+        }
+        return true
+    }
+
+    private fun onNavItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_setting -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivityForResult(intent, REQUEST_CLEAR)
+            }
+        }
+        dl_nav.closeDrawers()
+        return false
+    }
+
     private fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.menu_item_select          -> {
@@ -185,12 +209,15 @@ class MainActivity : AppCompatActivity() {
 
     @ImplicitReflectionSerializer
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i(TAG, ": " + resultCode)
         if (resultCode != Activity.RESULT_OK) return
         when (requestCode) {
             REQUEST_ALBUM, REQUEST_CAMERA ->
                 onSelectPhotoResult(requestCode, resultCode, data)
             REQUEST_MULTI_DELETE          ->
                 onMultiDeleteResult(requestCode, resultCode, data)
+            REQUEST_CLEAR                 ->
+                onClearResult(requestCode, resultCode, data)
         }
     }
 
@@ -201,7 +228,7 @@ class MainActivity : AppCompatActivity() {
         val uri = if (requestCode == REQUEST_ALBUM) data?.data else tempPhotoUri
         val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
 
-        val filePath = imageFilePath(System.currentTimeMillis())
+        val filePath = FileUtils.imageFilePath(System.currentTimeMillis())
         File(filePath).parentFile.let {
             if (!it.exists()) it.mkdirs()
         }
@@ -219,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(item: TranslateStreetScape) {
                 pb_uploading.visibility = View.GONE
                 // 写入本地
-                val objFile = File(scapeFilePath(item.timeStamp))
+                val objFile = File(FileUtils.scapeFilePath(item.timeStamp))
                 objFile.parentFile.let {
                     if (!it.exists()) it.mkdirs()
                 }
@@ -259,16 +286,24 @@ class MainActivity : AppCompatActivity() {
                 adapter.itemList[it]
             }
             ?.apply { adapter.itemList.removeAll(this) }
-            ?.forEach {
-                it.photoFile.apply { if (exists()) delete() }
-                it.scapeFile?.apply { if (exists()) delete() }
-            }
+            ?.forEach(::deleteScape)
             ?.let { adapter.notifyItemRangeChanged(indexes.min()!!, indexes.size) }
     }
 
-    private fun imageFilePath(imgName: Any) = "$appDataFilePath/image/$imgName.jpg"
+    private fun onClearResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data == null) return
+        if (data.getBooleanExtra(EXTRA_CLEAR_SCAPE, false)) {
+//            adapter.itemList.forEach(::deleteScape)
+            adapter.itemList.clear()
+            adapter.notifyDataSetChanged()
+        }
+//        nav_view.setCheckedItem(R.id.menu_item_home)
+    }
 
-    private fun scapeFilePath(scapeName: Any) = "$appDataFilePath/scape/$scapeName.sca"
+    private fun deleteScape(scape: TranslateStreetScape) {
+        scape.photoFile.apply { if (exists()) delete() }
+        scape.scapeFile?.apply { if (exists()) delete() }
+    }
 
     companion object {
         // requestCode
@@ -276,9 +311,11 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_ALBUM = 2626
         const val REQUEST_CAMERA = 2627
         const val REQUEST_MULTI_DELETE = 2628
+        const val REQUEST_CLEAR = 2629
 
         // extra
         const val EXTRA_SCROLL_Y = "scroll_y"
         const val EXTRA_DELETE_ITEMS_INDEX = "delete_items_index"
+        const val EXTRA_CLEAR_SCAPE = "clear_scape"
     }
 }
