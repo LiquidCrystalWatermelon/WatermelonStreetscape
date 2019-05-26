@@ -29,7 +29,9 @@
             android:name=".activity.PhotoViewActivity"
             android:theme="@style/AppThemeNoBar">
         </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/AppThemeNoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
