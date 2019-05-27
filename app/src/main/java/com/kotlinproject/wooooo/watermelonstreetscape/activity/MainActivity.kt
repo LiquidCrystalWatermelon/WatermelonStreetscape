@@ -184,6 +184,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivityForResult(intent, REQUEST_CLEAR)
             }
+            R.id.menu_item_about   -> {
+                val intent = Intent(this, AboutActivity::class.java)
+                startActivity(intent)
+            }
         }
         dl_nav.closeDrawers()
         return false
@@ -209,7 +213,6 @@ class MainActivity : AppCompatActivity() {
 
     @ImplicitReflectionSerializer
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.i(TAG, ": " + resultCode)
         if (resultCode != Activity.RESULT_OK) return
         when (requestCode) {
             REQUEST_ALBUM, REQUEST_CAMERA ->
