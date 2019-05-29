@@ -5,15 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.support.design.widget.AppBarLayout
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.ListView
-import android.widget.Toolbar
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import kotlinx.android.synthetic.main.include_app_bar.view.*
 import java.io.File
 
@@ -23,8 +21,8 @@ class SettingsActivity : PreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.setting_main)
-        val pref = findPreference("data_clear")
-        pref.setOnPreferenceClickListener {
+        val prefClear = findPreference("data_clear")
+        prefClear.setOnPreferenceClickListener {
             AlertDialog
                 .Builder(this)
                 .setTitle("数据清除后将无法恢复，确定要清除数据？")
@@ -35,6 +33,12 @@ class SettingsActivity : PreferenceActivity() {
                 }
                 .setNegativeButton("取消", null)
                 .show()
+            true
+        }
+        val prefIp = findPreference("service_ip")
+        prefIp.title = spServiceIp
+        prefIp.setOnPreferenceChangeListener { _, newValue ->
+            prefIp.title = newValue.toString()
             true
         }
     }

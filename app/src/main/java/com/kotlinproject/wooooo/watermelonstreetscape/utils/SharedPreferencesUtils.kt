@@ -4,16 +4,21 @@ import android.app.Activity
 import android.content.Context
 import android.preference.PreferenceManager
 
-var Context.spServiceIp: String?
-    get() {
-        return getSharedPreferences("service_ip", Activity.MODE_PRIVATE)
-            .getString("service_ip", null) ?: "192.168.0.16:5000"
-    }
-    set(value) {
-        val spe = getSharedPreferences("service_ip", Activity.MODE_PRIVATE).edit()
-        spe.putString("service_ip", value)
-        spe.apply()
-    }
+val Context.spServiceIp
+    get() = PreferenceManager
+        .getDefaultSharedPreferences(this)
+        .getString("service_ip", "192.168.0.16:5000")
+//
+//var Context.spServiceIp: String?
+//    get() {
+//        return getSharedPreferences("service_ip", Activity.MODE_PRIVATE)
+//            .getString("service_ip", null) ?: "192.168.0.16:5000"
+//    }
+//    set(value) {
+//        val spe = getSharedPreferences("service_ip", Activity.MODE_PRIVATE).edit()
+//        spe.putString("service_ip", value)
+//        spe.apply()
+//    }
 
 private fun Context.spBoolean(s: String, default: Boolean) = PreferenceManager
     .getDefaultSharedPreferences(this)

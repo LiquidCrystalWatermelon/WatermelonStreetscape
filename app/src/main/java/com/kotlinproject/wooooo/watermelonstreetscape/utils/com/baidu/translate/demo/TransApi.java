@@ -4,42 +4,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TransApi {
-    private static final String TRANS_API_HOST = "http://api.fanyi.baidu.com/api/trans/vip/translate";
+  private static final String TRANS_API_HOST = "http://api.fanyi.baidu.com/api/trans/vip/translate";
 
-    private String appid="20190511000296526";
-    private String securityKey="OuMVXO6ihneOztfWAqUQ";
+  private String appid = "20190511000296526";
+  private String securityKey = "OuMVXO6ihneOztfWAqUQ";
 
-    public TransApi() {
+  public static TransApi instance = new TransApi();
 
-    }
+  public TransApi() {
 
-    public TransApi(String appid, String securityKey) {
-        this.appid = appid;
-        this.securityKey = securityKey;
-    }
+  }
 
-    public String getTransResult(String query, String from, String to) {
-        Map<String, String> params = buildParams(query, from, to);
-        return HttpGet.get(TRANS_API_HOST, params);
-    }
+  public TransApi(String appid, String securityKey) {
+    this.appid = appid;
+    this.securityKey = securityKey;
+  }
 
-    private Map<String, String> buildParams(String query, String from, String to) {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("q", query);
-        params.put("from", from);
-        params.put("to", to);
+  public String getTransResult(String query, String from, String to) {
+    Map<String, String> params = buildParams(query, from, to);
+    return HttpGet.get(TRANS_API_HOST, params);
+  }
 
-        params.put("appid", appid);
+  private Map<String, String> buildParams(String query, String from, String to) {
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("q", query);
+    params.put("from", from);
+    params.put("to", to);
 
-        // 随机数
-        String salt = String.valueOf(System.currentTimeMillis());
-        params.put("salt", salt);
+    params.put("appid", appid);
 
-        // 签名
-        String src = appid + query + salt + securityKey; // 加密前的原文
-        params.put("sign", MD5.md5(src));
+    // 随机数
+    String salt = String.valueOf(System.currentTimeMillis());
+    params.put("salt", salt);
 
-        return params;
-    }
+    // 签名
+    String src = appid + query + salt + securityKey; // 加密前的原文
+    params.put("sign", MD5.md5(src));
+
+    return params;
+  }
 
 }

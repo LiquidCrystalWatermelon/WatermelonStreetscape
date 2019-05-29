@@ -6,6 +6,7 @@ import com.kotlinproject.wooooo.watermelonstreetscape.model.TextBox
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateResult
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.TransApi
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.translate
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
@@ -21,7 +22,7 @@ import kotlin.concurrent.thread
 import kotlin.math.min
 import kotlin.random.Random
 
-typealias HttpClient = FakeHttpClient
+typealias HttpClient = RealHttpClient
 
 interface HttpCallback<T> {
     fun onResponse(item: T)
@@ -82,7 +83,7 @@ object RealHttpClient {
                 .url("http://${activity.spServiceIp}/upload_img")
                 .post(requestBody)
                 .build()
-            val result = try {
+            val boxes = try {
                 OkHttpClient()
                     .newBuilder()
                     .connectTimeout(60L, TimeUnit.SECONDS)
@@ -93,6 +94,7 @@ object RealHttpClient {
                     .body()
                     ?.string()
                     ?.let { Json.nonstrict.parseList<TextBox>(it) }
+                    ?.onEach { it.text = translate(it.text) }
             } catch (e: Exception) {
                 e.printStackTrace()
                 activity.runOnUiThread { callback.onFailure(e) }
@@ -100,10 +102,10 @@ object RealHttpClient {
             }
 
             activity.runOnUiThread {
-                if (result == null) {
+                if (boxes == null) {
                     callback.onFailure(NullPointerException("Empty response body!"))
                 } else {
-                    callback.onResponse(TranslateStreetScape(bitmapPath, result))
+                    callback.onResponse(TranslateStreetScape(bitmapPath, boxes))
                 }
             }
         }
@@ -136,11 +138,7 @@ object FakeHttpClient {
 ////                .map { Random.nextInt(0x4e00, 0x9fa5).toChar() }
 //                .joinToString("")
                     val s = "apple ".repeat(Random.nextInt(10) + 1)
-                    val result = trans
-                        .getTransResult(s, "auto", "zh")
-                        .let { Json.nonstrict.parse<TranslateResult>(it) }
-                        .trans_result[0]
-                        .dst
+                    val result = translate(s)
                     TextBox(x, y, xe, ye, result, degree)
                 }
             } catch (e: Exception) {

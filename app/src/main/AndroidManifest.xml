@@ -29,7 +29,7 @@
         </activity>
         <activity
             android:name=".activity.PhotoViewActivity"
-            android:theme="@style/AppThemeNoBar">
+            android:theme="@style/AppThemeNoBarSpecialAccentColor">
         </activity>
         <activity
             android:name=".activity.MainActivity"

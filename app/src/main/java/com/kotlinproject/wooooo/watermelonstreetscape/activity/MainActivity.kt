@@ -143,15 +143,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onFabLongClick(view: View): Boolean {
-        val et = EditText(this)
-        et.setText(spServiceIp)
-        AlertDialog
-            .Builder(this)
-            .setTitle("修改服务器ip地址：")
-            .setView(et)
-            .setNegativeButton("取消", null)
-            .setPositiveButton("确定") { _, _ -> spServiceIp = et.text.toString() }
-            .show()
+//        val et = EditText(this)
+//        et.setText(spServiceIp)
+//        AlertDialog
+//            .Builder(this)
+//            .setTitle("修改服务器ip地址：")
+//            .setView(et)
+//            .setNegativeButton("取消", null)
+//            .setPositiveButton("确定") { _, _ -> spServiceIp = et.text.toString() }
+//            .show()
         return true
     }
 

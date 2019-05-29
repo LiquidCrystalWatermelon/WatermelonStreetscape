@@ -7,13 +7,13 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class TextBox(
-    val x0: Float,
-    val y0: Float,
-    val x1: Float,
-    val y1: Float,
-    val text: String,
-    @Optional val degree: Float = 0f,
-    @Optional val tag: String? = null
+    var x0: Float,
+    var y0: Float,
+    var x1: Float,
+    var y1: Float,
+    var text: String,
+    @Optional var degree: Float = 0f,
+    @Optional var tag: String? = null
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(

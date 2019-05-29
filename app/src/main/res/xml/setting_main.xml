@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="服务器ip">
+        <EditTextPreference
+            android:key="service_ip"
+            android:title="ip"
+            android:defaultValue="192.168.0.16:5000"/>
+
+    </PreferenceCategory>
     <PreferenceCategory android:title="街景预览">
         <SwitchPreference
             android:defaultValue="true"

@@ -14,8 +14,12 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
         <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="AppThemeNoBarSpecialAccentColor" parent="AppThemeNoBar">
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="SettingTheme" parent="AppTheme">
