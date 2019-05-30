@@ -45,6 +45,9 @@ object StreetScapeUtils {
             paint.color = textBorderColor
             paint.style = textBorderStyle
             streetScape.textBoxList.forEach {
+
+                it.degree = 0f
+
                 val cx = (it.x0 + it.x1) / 2
                 val cy = (it.y0 + it.y1) / 2
                 canvas.rotate(-it.degree, cx, cy)

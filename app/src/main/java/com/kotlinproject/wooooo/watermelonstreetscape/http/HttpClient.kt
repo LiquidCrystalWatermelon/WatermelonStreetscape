@@ -9,6 +9,7 @@ import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.TransApi
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.aipOcrInstance
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.translate
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.spIsTestMode
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
@@ -24,7 +25,15 @@ import kotlin.concurrent.thread
 import kotlin.math.min
 import kotlin.random.Random
 
-typealias HttpClient = RealHttpClient
+//typealias HttpClient = RealHttpClient
+
+interface HttpClientInterface {
+    fun uploadImage(
+        activity: Activity,
+        bitmapPath: String,
+        callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
+    )
+}
 
 interface HttpCallback<T> {
     fun onResponse(item: T)
@@ -53,11 +62,23 @@ class HttpCallbackBuilder<T> {
     }
 }
 
-object RealHttpClient {
+
+object HttpClient : HttpClientInterface {
+    override fun uploadImage(
+        activity: Activity,
+        bitmapPath: String,
+        callback: HttpCallbackBuilder<TranslateStreetScape>.() -> Unit
+    ) {
+        val hc = if (activity.spIsTestMode) DuHttpClient else RealHttpClient
+        hc.uploadImage(activity, bitmapPath, callback)
+    }
+}
+
+object RealHttpClient : HttpClientInterface {
 
     @UnstableDefault
     @ImplicitReflectionSerializer
-    fun uploadImage(
+    override fun uploadImage(
         activity: Activity,
         bitmapPath: String,
         callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
@@ -157,10 +178,10 @@ object FakeHttpClient {
     }
 }
 
-object DuHttpClient {
+object DuHttpClient : HttpClientInterface {
     @UnstableDefault
     @ImplicitReflectionSerializer
-    fun uploadImage(
+    override fun uploadImage(
         activity: Activity,
         bitmapPath: String,
         callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
@@ -171,7 +192,7 @@ object DuHttpClient {
 
         thread {
             val aip = aipOcrInstance
-            val options = mapOf(
+            val options = hashMapOf(
                 "recognize_granularity" to "big",
                 "language_type" to "CHN_ENG_JAP",
                 "detect_direction" to "true",
@@ -179,7 +200,27 @@ object DuHttpClient {
                 "vertexes_location" to "true"
             )
 
-//            val res = aip.general()
+            try {
+                val res = aip.general(bitmapPath, options)
+                val boxes = res
+                    .getJSONArray("words_result")
+                    .let { (0 until it.length()).map { i -> it.getJSONObject(i) } }
+                    .map {
+                        val location = it.getJSONObject("location")
+                        val left = location.getDouble("left").toFloat()
+                        val top = location.getDouble("top").toFloat()
+                        val width = location.getDouble("width").toFloat()
+                        val height = location.getDouble("height").toFloat()
+                        val words = translate(it.getString("words"))
+                        TextBox(left, top, left + width, top + height, words)
+                    }
+                activity.runOnUiThread {
+                    callback.onResponse(TranslateStreetScape(bitmapPath, boxes))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                activity.runOnUiThread { callback.onFailure(e) }
+            }
         }
     }
 }

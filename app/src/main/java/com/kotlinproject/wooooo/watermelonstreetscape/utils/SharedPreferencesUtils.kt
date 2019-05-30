@@ -20,6 +20,7 @@ val Context.spServiceIp
 //        spe.apply()
 //    }
 
+
 private fun Context.spBoolean(s: String, default: Boolean) = PreferenceManager
     .getDefaultSharedPreferences(this)
     .getBoolean(s, default)
@@ -29,3 +30,11 @@ val Context.spIsBackgroundDark get() = spBoolean("is_background_dark", true)
 val Context.spShowTextBorder get() = spBoolean("show_text_border", false)
 
 val Context.spHighLightCrowdingText get() = spBoolean("highlight_crowding_text", true)
+
+var Context.spIsTestMode
+    get() = spBoolean("is_test_mode", false)
+    set(value) {
+        val spe = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        spe.putBoolean("is_test_mode", value)
+        spe.apply()
+    }

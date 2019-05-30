@@ -22,9 +22,11 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/iv_watermelon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:longClickable="true"
                 android:src="@drawable/watermelon_logo"/>
 
             <TextView
@@ -34,6 +36,15 @@
                 android:text="b l u e 团队"
                 android:textColor="?android:colorForeground"
                 android:textSize="28sp"/>
+
+            <TextView
+                android:id="@+id/tv_test_mode"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:text="调试模式"/>
         </LinearLayout>
 
     </RelativeLayout>

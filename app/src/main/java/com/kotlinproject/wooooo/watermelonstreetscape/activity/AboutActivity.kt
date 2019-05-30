@@ -2,7 +2,10 @@ package com.kotlinproject.wooooo.watermelonstreetscape.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.kotlinproject.wooooo.watermelonstreetscape.R
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.spIsTestMode
+import kotlinx.android.synthetic.main.activity_about.*
 import kotlinx.android.synthetic.main.include_app_bar.*
 
 class AboutActivity : AppCompatActivity() {
@@ -17,5 +20,14 @@ class AboutActivity : AppCompatActivity() {
             title = "关于西瓜街景"
         }
         toolbar_app.setNavigationOnClickListener { finish() }
+
+        tv_test_mode.visibility = if (spIsTestMode) View.VISIBLE else View.GONE
+
+        iv_watermelon.setOnLongClickListener {
+            val itm = spIsTestMode
+            spIsTestMode = !itm
+            tv_test_mode.visibility = if (!itm) View.VISIBLE else View.GONE
+            true
+        }
     }
 }
