@@ -6,8 +6,8 @@ import java.util.Map;
 public class TransApi {
   private static final String TRANS_API_HOST = "http://api.fanyi.baidu.com/api/trans/vip/translate";
 
-  private String appid = "20190511000296526";
-  private String securityKey = "OuMVXO6ihneOztfWAqUQ";
+  private String appid = TransformData.INSTANCE.getAppid();
+  private String securityKey = TransformData.INSTANCE.getSecurityKey();
 
   public static TransApi instance = new TransApi();
 

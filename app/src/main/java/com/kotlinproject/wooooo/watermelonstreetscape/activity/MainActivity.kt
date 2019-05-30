@@ -240,13 +240,13 @@ class MainActivity : AppCompatActivity() {
             it.flush()
         }
 
-        HttpClient.uploadImage(this, filePath, object : HttpCallback<TranslateStreetScape> {
-            override fun onFailure(e: Exception?) {
+        HttpClient.uploadImage(this, filePath) {
+            onFailure {
                 pb_uploading.visibility = View.GONE
                 toast("图像上传失败")
             }
 
-            override fun onResponse(item: TranslateStreetScape) {
+            onResponse { item ->
                 pb_uploading.visibility = View.GONE
                 // 写入本地
                 val objFile = File(FileUtils.scapeFilePath(item.timeStamp))
@@ -266,7 +266,7 @@ class MainActivity : AppCompatActivity() {
 //                adapter.notifyDataSetChanged()
                 Log.i(TAG, ": TranslateStreetScape ${item.timeStamp}")
             }
-        })
+        }
     }
 
     private fun onMultiDeleteResult(requestCode: Int, resultCode: Int, data: Intent?) {

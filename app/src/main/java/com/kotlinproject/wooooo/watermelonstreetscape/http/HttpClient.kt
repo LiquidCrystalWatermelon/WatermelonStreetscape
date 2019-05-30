@@ -29,43 +29,41 @@ interface HttpCallback<T> {
     fun onFailure(e: Exception?)
 }
 
-interface HttpClientInterface {
-    fun <T> uploadImage(bitmapPath: String, callback: HttpCallback<T>)
+class HttpCallbackBuilder<T> {
+    internal var mOnResponse: ((T) -> Unit)? = null
+    internal var mOnFailure: ((Exception?) -> Unit)? = null
+    fun onResponse(action: ((item: T) -> Unit)?) {
+        mOnResponse = action
+    }
+
+    fun onFailure(action: ((e: Exception?) -> Unit)?) {
+        mOnFailure = action
+    }
+
+    fun build() = object : HttpCallback<T> {
+        override fun onFailure(e: Exception?) {
+            mOnFailure?.invoke(e)
+        }
+
+        override fun onResponse(item: T) {
+            mOnResponse?.invoke(item)
+        }
+    }
 }
 
 object RealHttpClient {
+
+    @UnstableDefault
     @ImplicitReflectionSerializer
-    fun uploadImage(activity: Activity, bitmapPath: String, callback: (TranslateStreetScape?) -> Unit) {
-        thread {
-            val file = File(bitmapPath)
-            val requestBody = MultipartBody
-                .Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("bitmap", file.name, RequestBody.create(MediaType.parse("image/jpg"), file))
-                .build()
-            val request = Request
-                .Builder()
-                .url("http://127.0.0.1:5000/upload_img")
-                .post(requestBody)
-                .build()
-            val response = OkHttpClient()
-                .newBuilder()
-                .connectTimeout(60L, TimeUnit.SECONDS)
-                .build()
-                .newCall(request)
-                .execute()
-
-            val result = try {
-                response.body()?.string()?.let { Json.parseList<TextBox>(it) }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }?.let { TranslateStreetScape(bitmapPath, it) }
-
-            activity.runOnUiThread {
-                callback(result)
-            }
-        }
+    fun uploadImage(
+        activity: Activity,
+        bitmapPath: String,
+        callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
+    ) {
+        val mCallback = HttpCallbackBuilder<TranslateStreetScape>()
+            .also(callback)
+            .build()
+        uploadImage(activity, bitmapPath, mCallback)
     }
 
     @UnstableDefault
@@ -108,6 +106,23 @@ object RealHttpClient {
                     callback.onResponse(TranslateStreetScape(bitmapPath, boxes))
                 }
             }
+        }
+    }
+}
+
+object DuHttpClient {
+    @UnstableDefault
+    @ImplicitReflectionSerializer
+    fun uploadImage(
+        activity: Activity,
+        bitmapPath: String,
+        callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
+    ) {
+        val mCallback = HttpCallbackBuilder<TranslateStreetScape>()
+            .also(callback)
+            .build()
+        thread {
+
         }
     }
 }

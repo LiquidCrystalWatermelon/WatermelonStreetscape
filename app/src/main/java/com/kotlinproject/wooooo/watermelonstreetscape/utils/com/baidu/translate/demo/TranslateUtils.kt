@@ -1,11 +1,19 @@
 package com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo
 
+import com.baidu.aip.ocr.AipOcr
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateResult
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parse
 import java.lang.Exception
+
+val AipOcr.instance by lazy {
+    AipOcr(OcrData.appid, OcrData.apiKey, OcrData.secretKey).apply {
+        setConnectionTimeoutInMillis(2000)
+        setSocketTimeoutInMillis(60000)
+    }
+}
 
 @UnstableDefault
 @ImplicitReflectionSerializer
