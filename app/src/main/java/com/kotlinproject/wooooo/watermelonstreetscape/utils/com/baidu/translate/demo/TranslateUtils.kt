@@ -8,6 +8,13 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.parse
 import java.lang.Exception
 
+val aipOcrInstance by lazy {
+    AipOcr(OcrData.appid, OcrData.apiKey, OcrData.secretKey).apply {
+        setConnectionTimeoutInMillis(2000)
+        setSocketTimeoutInMillis(60000)
+    }
+}
+
 @UnstableDefault
 @ImplicitReflectionSerializer
 fun translate(query: String, from: String = "auto", to: String = "zh") = try {

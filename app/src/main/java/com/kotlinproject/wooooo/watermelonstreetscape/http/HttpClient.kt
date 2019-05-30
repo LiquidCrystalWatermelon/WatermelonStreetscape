@@ -2,10 +2,12 @@ package com.kotlinproject.wooooo.watermelonstreetscape.http
 
 import android.app.Activity
 import android.graphics.BitmapFactory
+import com.baidu.aip.ocr.AipOcr
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TextBox
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateResult
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.TransApi
+import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.aipOcrInstance
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.com.baidu.translate.demo.translate
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -151,6 +153,33 @@ object FakeHttpClient {
                 val result = TranslateStreetScape(bitmapPath, textBoxList)
                 callback.onResponse(result)
             }
+        }
+    }
+}
+
+object DuHttpClient {
+    @UnstableDefault
+    @ImplicitReflectionSerializer
+    fun uploadImage(
+        activity: Activity,
+        bitmapPath: String,
+        callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
+    ) {
+        val callback = HttpCallbackBuilder<TranslateStreetScape>()
+            .also(callback)
+            .build()
+
+        thread {
+            val aip = aipOcrInstance
+            val options = mapOf(
+                "recognize_granularity" to "big",
+                "language_type" to "CHN_ENG_JAP",
+                "detect_direction" to "true",
+                "detect_language" to "true",
+                "vertexes_location" to "true"
+            )
+
+//            val res = aip.general()
         }
     }
 }
