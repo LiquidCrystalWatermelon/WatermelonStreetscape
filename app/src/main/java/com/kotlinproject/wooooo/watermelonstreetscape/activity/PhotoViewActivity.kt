@@ -52,7 +52,8 @@ class PhotoViewActivity : AppCompatActivity() {
             streetScape,
             highlightCrowdingText = spHighLightCrowdingText,
             showDarkMask = spIsBackgroundDark,
-            showTextBorder = spShowTextBorder
+            showTextBorder = spShowTextBorder,
+            textTilt = spIsTextTilt
         )
 
         siv_photo_view_with_text.setMinimumDpi(40)

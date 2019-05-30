@@ -31,6 +31,8 @@ val Context.spShowTextBorder get() = spBoolean("show_text_border", false)
 
 val Context.spHighLightCrowdingText get() = spBoolean("highlight_crowding_text", true)
 
+val Context.spIsTextTilt get() = spBoolean("is_text_tilt",false)
+
 var Context.spIsTestMode
     get() = spBoolean("is_test_mode", false)
     set(value) {
@@ -38,3 +40,4 @@ var Context.spIsTestMode
         spe.putBoolean("is_test_mode", value)
         spe.apply()
     }
+

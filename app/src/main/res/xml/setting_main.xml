@@ -2,9 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="服务器ip">
         <EditTextPreference
+            android:defaultValue="192.168.0.16:5000"
             android:key="service_ip"
-            android:title="ip"
-            android:defaultValue="192.168.0.16:5000"/>
+            android:title="ip"/>
 
     </PreferenceCategory>
     <PreferenceCategory android:title="街景预览">
@@ -20,8 +20,14 @@
             android:defaultValue="true"
             android:key="highlight_crowding_text"
             android:title="拥挤文本高亮"/>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="is_text_tilt"
+            android:title="文本允许倾斜"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="内存管理">
-        <Preference android:title="清除数据" android:key="data_clear"/>
+        <Preference
+            android:key="data_clear"
+            android:title="清除数据"/>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -17,7 +17,8 @@ object StreetScapeUtils {
         darkMaskColor: Int = Color.parseColor("#66000000"),
         showTextBorder: Boolean = false,
         textBorderColor: Int = Color.parseColor("#66000000"),
-        textBorderStyle: Paint.Style = Paint.Style.FILL
+        textBorderStyle: Paint.Style = Paint.Style.FILL,
+        textTilt: Boolean = true
     ): Bitmap {
         val bitmap = BitmapFactory
             .decodeFile(streetScape.photoPath)
@@ -46,13 +47,13 @@ object StreetScapeUtils {
             paint.style = textBorderStyle
             streetScape.textBoxList.forEach {
 
-                it.degree = 0f
+                if (!textTilt) it.degree = 0f
 
                 val cx = (it.x0 + it.x1) / 2
                 val cy = (it.y0 + it.y1) / 2
-                canvas.rotate(-it.degree, cx, cy)
-                canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
                 canvas.rotate(it.degree, cx, cy)
+                canvas.drawRect(it.x0, it.y0, it.x1, it.y1, paint)
+                canvas.rotate(-it.degree, cx, cy)
             }
         }
 
@@ -94,7 +95,7 @@ object StreetScapeUtils {
             // 旋转画布
             val cx = (box.x0 + box.x1) / 2
             val cy = (box.y0 + box.y1) / 2
-            canvas.rotate(-box.degree, cx, cy)
+            canvas.rotate(box.degree, cx, cy)
 
             // 绘制文字
             val count = lines.size
@@ -105,7 +106,7 @@ object StreetScapeUtils {
             }
 
             // 画布转回来
-            canvas.rotate(box.degree, cx, cy)
+            canvas.rotate(-box.degree, cx, cy)
         }
         return bitmap
     }
