@@ -110,22 +110,6 @@ object RealHttpClient {
     }
 }
 
-object DuHttpClient {
-    @UnstableDefault
-    @ImplicitReflectionSerializer
-    fun uploadImage(
-        activity: Activity,
-        bitmapPath: String,
-        callback: (HttpCallbackBuilder<TranslateStreetScape>.() -> Unit)
-    ) {
-        val mCallback = HttpCallbackBuilder<TranslateStreetScape>()
-            .also(callback)
-            .build()
-        thread {
-
-        }
-    }
-}
 
 object FakeHttpClient {
 
