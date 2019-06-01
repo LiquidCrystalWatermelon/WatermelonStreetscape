@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
 
         fab_take_photo.isLongClickable = true
         fab_take_photo.setOnClickListener(::onFabClick)
-        fab_take_photo.setOnLongClickListener(::onFabLongClick)
         rv_photo_item.adapter = adapter
         rv_photo_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -135,19 +134,6 @@ class MainActivity : AppCompatActivity() {
             }
             ?.sortedByDescending { it.timeStamp }
             ?.let { adapter.itemList.addAll(it) }
-    }
-
-    private fun onFabLongClick(view: View): Boolean {
-//        val et = EditText(this)
-//        et.setText(spServiceIp)
-//        AlertDialog
-//            .Builder(this)
-//            .setTitle("修改服务器ip地址：")
-//            .setView(et)
-//            .setNegativeButton("取消", null)
-//            .setPositiveButton("确定") { _, _ -> spServiceIp = et.text.toString() }
-//            .show()
-        return true
     }
 
     private fun onFabClick(view: View) {

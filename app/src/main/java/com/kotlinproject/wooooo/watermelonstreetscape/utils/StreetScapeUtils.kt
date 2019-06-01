@@ -62,9 +62,10 @@ object StreetScapeUtils {
 
         // 绘制文本
         streetScape.textBoxList.forEach { box ->
-            val maxTextSize = min(bitmap.width, bitmap.height) / 4f
-//            val minTextSize = min(bitmap.width, bitmap.height) / 30f
-            val minTextSize = max(min(bitmap.width, bitmap.height) / 70f,15f)
+            // val maxTextSize = min(bitmap.width, bitmap.height) / 4f
+            val maxTextSize = abs(box.x1 - box.x0)
+            // val minTextSize = min(bitmap.width, bitmap.height) / 30f
+            val minTextSize = max(min(bitmap.width, bitmap.height) / 70f, 15f)
             val textSizeStep = min(bitmap.width, bitmap.height) / 100f
             // 先把字符串按行分割，每行最少1个字符
             // 每行平分文本框的高
