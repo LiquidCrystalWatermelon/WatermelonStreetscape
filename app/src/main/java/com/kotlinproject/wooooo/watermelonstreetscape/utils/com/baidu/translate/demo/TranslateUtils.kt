@@ -15,8 +15,8 @@ val aipOcrInstance by lazy {
     }
 }
 
-@UnstableDefault
-@ImplicitReflectionSerializer
+
+@UseExperimental(ImplicitReflectionSerializer::class)
 fun translate(query: String, from: String = "auto", to: String = "zh") = try {
     TransApi
         .instance

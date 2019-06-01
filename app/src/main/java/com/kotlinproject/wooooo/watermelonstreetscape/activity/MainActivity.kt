@@ -13,25 +13,20 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import com.kotlinproject.wooooo.watermelonstreetscape.R
 import com.kotlinproject.wooooo.watermelonstreetscape.adapter.PhotoItemAdapter
-import com.kotlinproject.wooooo.watermelonstreetscape.http.HttpCallback
 import com.kotlinproject.wooooo.watermelonstreetscape.http.HttpClient
 import com.kotlinproject.wooooo.watermelonstreetscape.model.TranslateStreetScape
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Gravity
-import android.widget.EditText
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.FileUtils
-import com.kotlinproject.wooooo.watermelonstreetscape.utils.spServiceIp
 import com.kotlinproject.wooooo.watermelonstreetscape.utils.toast
 import kotlinx.android.synthetic.main.include_app_bar.*
-import kotlinx.serialization.ImplicitReflectionSerializer
 import java.io.*
 
 /*
@@ -211,7 +206,6 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-    @ImplicitReflectionSerializer
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) return
         when (requestCode) {
@@ -224,7 +218,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @ImplicitReflectionSerializer
     private fun onSelectPhotoResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // 更新在首页列表中
         pb_uploading.visibility = View.VISIBLE

@@ -75,9 +75,6 @@ object HttpClient : HttpClientInterface {
 }
 
 object RealHttpClient : HttpClientInterface {
-
-    @UnstableDefault
-    @ImplicitReflectionSerializer
     override fun uploadImage(
         activity: Activity,
         bitmapPath: String,
@@ -89,8 +86,7 @@ object RealHttpClient : HttpClientInterface {
         uploadImage(activity, bitmapPath, mCallback)
     }
 
-    @UnstableDefault
-    @ImplicitReflectionSerializer
+    @UseExperimental(ImplicitReflectionSerializer::class)
     fun uploadImage(activity: Activity, bitmapPath: String, callback: HttpCallback<TranslateStreetScape>) {
         thread {
             val file = File(bitmapPath)
@@ -109,6 +105,8 @@ object RealHttpClient : HttpClientInterface {
                     .newBuilder()
                     .connectTimeout(60L, TimeUnit.SECONDS)
                     .callTimeout(60L, TimeUnit.SECONDS)
+                    .readTimeout(60L, TimeUnit.SECONDS)
+                    .writeTimeout(60L, TimeUnit.SECONDS)
                     .build()
                     .newCall(request)
                     .execute()
@@ -134,7 +132,7 @@ object RealHttpClient : HttpClientInterface {
 }
 
 
-object FakeHttpClient {
+object TestHttpClient {
 
     @UnstableDefault
     @ImplicitReflectionSerializer
@@ -179,8 +177,9 @@ object FakeHttpClient {
 }
 
 object DuHttpClient : HttpClientInterface {
-    @UnstableDefault
-    @ImplicitReflectionSerializer
+    //    @UnstableDefault
+//    @ImplicitReflectionSerializer
+    @UseExperimental(ImplicitReflectionSerializer::class)
     override fun uploadImage(
         activity: Activity,
         bitmapPath: String,
